@@ -1,0 +1,281 @@
+DIV#outershell {
+	position:relative;
+	background-position:center;
+	background: #FFF;
+	width:926px;
+	height:195px;
+	margin: 0 auto;
+	padding:0;
+	top:20px;	
+}
+
+DIV#outershell2 {
+	position:relative;
+	background-position:center;
+	background: #FFF;
+	width:926px;
+	height:568px;
+	margin: 0 auto;
+	padding:0;
+	top:0px;	
+}
+
+DIV#outershell3 {
+	position:relative;
+	background-position:center;
+	background: #FFF;
+	width:926px;
+	height:84px;
+	margin: 0 auto;
+	padding-top:20px;
+	padding-bottom:10px;
+	top:0px;	
+}
+
+DIV#secondthirdA{
+	position:absolute;
+	background-color: #FFF;
+	width:926px;
+	height:538px;
+	margin: 0;
+	padding:0;
+	top:0;
+	left:0;
+	}
+
+DIV#socialbox2{
+	float:left;
+	height:20px;
+	background-color:#FFF;
+	width:894px;
+	left:16px;
+	border-width: 1px;
+	border-bottom-style:solid;
+	border-bottom-color:#D5D8D9;
+	border-top-color:#D5D8D9;
+	border-top-style:solid;
+}
+
+DIV#lowerfade2 {
+	float:left;
+	margin-top:16px;
+	width:894px;
+	height:35px;
+	left:16px;
+	background-image:url(../images/TopFade.png);
+	background-repeat:no-repeat;
+}
+
+DIV#boardsetup2{
+	padding-left:100px;
+	padding-top:50px;
+	float:left;
+	height:538px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	text-decoration:none;
+	overflow-y: auto;
+	
+}
+
+DIV#boardsetup2 a{
+	text-decoration:none;
+	font-weight:bold;
+	color:#603;
+}
+
+DIV#boardsetup2 a:hover{
+	text-decoration:none;
+	font-weight:bold;
+	color:#F89422;
+}
+
+DIV#boardsetup3{
+	padding-left:100px;
+	padding-top:50px;
+	float:left;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	text-decoration:none;
+	margin-bottom:20px;
+}
+
+DIV#boardsetup3 a{
+	text-decoration:none;
+	font-weight:bold;
+	color:#603;
+}
+
+DIV#boardsetup3 a:hover{
+	text-decoration:none;
+	font-weight:bold;
+	color:#F89422;
+}
+
+DIV#announceentry {
+	display:block;
+	float:left;
+	width:570px;
+	margin-bottom:20px;
+}
+
+DIV#divcontainer {
+	float:left;
+	display:block;
+	width:705px;
+	border-color:#000;
+	border-width:1px;
+	border-style:solid;
+	margin-bottom:20px;
+	background-color:#CC9;
+	padding:5px;
+	overflow-x: auto;
+}
+
+
+DIV#print_content {
+	float:left;
+	display:block;
+	width:705px;
+	border-color:#000;
+	border-width:1px;
+	border-style:solid;
+	margin-bottom:20px;
+	background-color:#CC9;
+	padding:5px;
+	overflow-x: auto;
+}
+
+DIV#getset{
+	float:left;
+}
+
+#hrsform{
+	background-color:#CC9;
+	border:#000;
+	border-color:#000;
+	border-width:medium;
+	
+}
+
+#oddrow{
+	background-color:#FFF;
+}
+#evenrow{
+	background-color:#E9E9E9;
+}
+
+#totals{
+	background-color:#CC9;
+	font-weight:bold;
+	
+}
+#totalwarning{
+	background-color:#F93;
+}
+
+DIV#socialbox2{
+	float:left;
+	margin-left:16px;
+	height:20px;
+	background-color:#FFF;
+	width:894px;
+	
+	border-width: 1px;
+	border-bottom-style:solid;
+	border-bottom-color:#D5D8D9;
+	border-top-color:#D5D8D9;
+	border-top-style:solid;
+}
+
+DIV#socialmenu2 {
+	float:right;
+	margin-top:3px;
+		
+	
+}
+#socialmenu2 ul{
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+
+#socialmenu2 ul li {
+	display:block;
+	float:left;
+	padding-left:8px;
+	font-size:10px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:bolder;
+	color:#999;
+	text-decoration:none;
+}
+
+#textl {
+	padding-top:2px;
+}
+#socialmenu2 ul li a {
+	text-decoration:none;
+	display:block;
+}
+
+#socialmenu2 ul li a:hover {
+	display:block;
+}
+
+DIV#lowerfade2 {
+	float:left;
+	margin-left:16px;
+	margin-bottom:20px;
+	margin-top: 20px;
+	width:894px;
+	height:35px;
+	background-image:url(../images/TopFade.png);
+	background-repeat:no-repeat;
+}
+
+DIV#profilepicposition{
+	position:absolute;
+	left:153px;
+	top:200px;
+	width:150px;
+	height:180px;
+	border-color:#F89422;
+	border-style:solid;
+	border-width:4px;	
+}
+Div#titleprofile {
+	position:absolute;
+	left:340px;
+	top:270px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:22px;
+	font-weight:bold;
+}
+
+DIV#profileposition{
+	position:absolute;
+	left:156px;
+	top:400px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	width:400px;
+	height:350px;
+	text-align:justify;
+	overflow-y: auto;
+	padding-right:10px;
+	}
+	
+DIV#archiveside {
+	position:absolute;
+	left:595px;
+	top:260px;
+	width:180px;
+	height:450px;
+	border-left-color:	#D5D8D9;
+	border-left-style:dotted;
+	border-left-width:6px;
+	padding-left:15px;
+	overflow:auto;
+}
+
