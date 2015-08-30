@@ -188,6 +188,15 @@
                  <li><a href="#">THREE</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
+          </li>
+          <? } elseif (isset($_SESSION['ncedadmin'])) { ?> 
+          <li class="has-dropdown"><a href="#">ADMIN PAGES</a>
+               <ul class="dropdown">
+                 <li><a href="ncedadmin.php">NCED ADMIN HOME</a></li>
+                 <li><a href="#">TWO</a></li>
+                 <li><a href="#">THREE</a></li>
+                 <li><a href="logout.php">LOGOUT</a></li>
+               </ul>
             </li>
           <? } else { ?> 
           <li><a href="login.php">MEMBER LOGIN</a></li> <?
