@@ -1,44 +1,36 @@
 <?php require_once("../includes/initialize.php"); ?>
-<? include("../includes/layouts/header2.php"); 
+<? include("../includes/layouts/header.php"); 
 
 if (isset($_SESSION['ncedadmin'])) {
 
-$member = new memobject();
-$meminfo = new infobject();
-$ceuinfo = new ceuinfo($member->set_archivedate());
+$member_admin = new memadmin();
+
 ?> <div class = "row"> <?
     ?> <div class = "medium-6 columns"> 
             <div class="row">
                 <div class="small-12 columns">
-                    <? $member->display_member(); ?>
+                    <? echo "Current Renewed Members: ";
+                    echo $member_admin->get_numberOf('RENEWED').'<br/>';
+                    echo $member_admin->get_numberOf('NOT RENEWED').'<br/>';
+                    echo $member_admin->get_numberOf('REVOKED');
+                    ?>
                 </div>
                 <div class="small-12 columns">
-                    <? $ceuinfo->snapshot(); ?>
+                    <? $member_admin->search_member_form(); ?>
                 </div>
             </div>
         </div> <?
     ?> <div class = "medium-6 columns"> <?
-        if (isset($_POST['uname'])) {
-            $member->profile_update($_POST); 
-        echo $_SESSION['tryagainc'].'<br/>';
-    }
-        $member->login_form();
+        if (isset($_POST['renewal'])) { $member_admin->update_renew($_POST); }
+            $member_admin->set_renew();
     ?> </div> <?
 ?> </div> 
     <div class = "row"> <?
     ?> <div class = "medium-6 columns"> <?
-        if (isset($_POST['editinfo'])) {
-            $meminfo->info_update($_POST); 
-            echo $_SESSION['tryagainc'].'<br/>';
-        }
-        echo $meminfo->info_form();
+        
     ?> </div> <?
     ?> <div class = "medium-6 columns"> <?
-        if (isset($_POST['uname'])) {
-            $member->profile_update($_POST); 
-        echo $_SESSION['tryagainc'].'<br/>';
-    }
-        $member->login_form();
+      
     ?> </div> <?
 ?> </div> <?
 }
