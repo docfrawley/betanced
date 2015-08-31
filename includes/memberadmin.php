@@ -111,7 +111,7 @@ class memadmin {
 
 	function find_memberN($number){
 		global $database;
-		$sql="SELECT * FROM renewal WHERE ncednum='.$number.'";
+		$sql="SELECT * FROM renewal WHERE ncednum='".$number."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		if ($value['ncednum']==$number) {return $number;}
@@ -120,13 +120,13 @@ class memadmin {
 
 	function find_memberL($lname){
 		global $database;
-		$sql="SELECT * FROM renewal WHERE lname='.$lname.'";
+		$sql="SELECT * FROM renewal WHERE lname='".$lname."'";
 		$result_set = $database->query($sql);
 		if ($database->num_rows($result_set) >1) {
 			echo "There are more than one member with that last name.<br/>Please chose from the members listed below.<br/>"
 			?><ul><?
 			while ($value = $database->fetch_array($result_set)) {
-				echo "<li><a href='ncedadmin.php?ncednumberL={$value["ncednum"]}'>{$value['fname']} {$value['lname']}</a></li>"
+				echo "<li><a href='ncedadmin.php?ncednumberL={$value["ncednum"]}'>{$value['fname']} {$value['lname']}</a></li>";
 			}
 			?></ul><?
 		} elseif ($database->num_rows($result_set)==1) {
@@ -141,6 +141,7 @@ class memadmin {
 		if ($info['ncednumber']) {$ncednumber = $this->find_memberN($info['ncednumber']);}
 		else {$ncednumber = $this->find_memberL($info['LastName']);}
 		if ($ncednumber<1) { $_SESSION['findmember']="What you entered does not correspond to any member info of file.";}
+		return $ncednumber;
 	}
 
 

@@ -11,9 +11,9 @@ class memobject {
 	private $ryear;
 	private $memstatus;
 	
-	function __construct() {
+	function __construct($ncednum) {
 		global $database;
-		$sql="SELECT * FROM renewal WHERE ncednum ='".$_SESSION['ncednumber']."'";
+		$sql="SELECT * FROM renewal WHERE ncednum ='".$ncednum."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		$this->username = $value['username'];
@@ -22,7 +22,7 @@ class memobject {
 		$this->fname = $value['fname'];
 		$this->ryear = $value['renewyear'];
 		$this->memstatus = $value['status'];
-		$sql="SELECT * FROM memstart WHERE ncednum ='".$_SESSION['ncednumber']."'";
+		$sql="SELECT * FROM memstart WHERE ncednum ='".$ncednum."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		$this->memstart = $value['whenst'];
@@ -146,6 +146,43 @@ class memobject {
 
 	function next_archive(){
 		return strtotime('+5 years', $this->set_archivedate());
+	}
+
+	function admin_renew(){
+		?> 
+		 <form action="ncedadmin.php" method="POST">
+		 	<fieldset>
+		 			<legend>Change Membership Status</legend>
+		 		<div class="row">
+			 		<div class="small-12 columns">
+			 			<label>Renewal Status</label>
+			 				<select name="rstatus">
+			 					<option selected="selected" value="<? echo $this->memstatus; ?>"/> <? echo $this->memstatus; ?> </option>
+				        		<option value="RENEWED"/> RENEWED </option>
+				        		<option value="REVOKED"/> REVOKED</option>
+						 	</select>
+			 		</div>
+			 	</div>
+			 	<div class="row">	
+			 		<div class="small-12 columns">
+			 			<label>Renewal Year</label>
+			 				<select name="rstatus">
+			 					<option selected="selected" value="<? echo $this->ryear; ?>"/> <? echo $this->ryear; ?> </option>
+						 		<? 
+			 					for ($x=0; $x<6; $x++){
+			 						?><option value="<? echo date('Y')+$x; ?>"/> <? echo date('Y')+$x; ?> </option><?
+			 					}
+			 					?>
+			 			 	</select>
+			 		</div>
+		 		</div>
+			<div class="row">
+		 		<div class="small-12 columns">
+        			<input type="submit" value="Submit" class="button tiny radius"/>
+        		</div>
+        	</div>
+        </fieldset>
+        </form><?
 	}
 }
 ?>

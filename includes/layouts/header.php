@@ -82,29 +82,7 @@
 
 <body onload="load()">
   <? session_start(); ?>
-  <header class="show-for-medium-up">
   
-        <div class="large-1 medium-1 columns"><a href="index.php"><img src="img/logo.png" alt="NCED Online. Click for Home."></a></div>
-        <div class="large-4 medium-5 columns"><img src="img/NCED word.gif" alt=""></div>
-        <div class="large-3 columns show-for-large-up"></div>
-        <div class="large-4 medium-6 columns">
-        <? $announcements = new all_announcements(); 
-        if ($announcements->num_announce() > 0) {
-          ?>
-          <ul class="example-orbit-content" data-orbit data-options="animation_speed:500;
-                                              animation:slide;
-                                              animation_speed:500;
-                                              pause_on_hover:false;
-                                              animation_speed:500;
-                                              navigation_arrows:false;
-                                              slide_number: false;
-                                              bullets: false">
-            <? $announcements->print_announcements(); ?>
-          </ul>
-        
-      <? } ?>
-      </div>
-  </header>
     <div class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
         <nav class="tab-bar hide-for-medium-up">

@@ -6,18 +6,18 @@ class ceuinfo {
 	private $archivearray;
 	private $cutoff;
 	
-	function __construct($dateneeded) {
+	function __construct($ncednumber, $dateneeded) {
 		global $database;
 		$this->cutoff = $dateneeded;
 		$this->ceuarray = array();
 		$this->archivearray = array();
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$_SESSION['ncednumber']."' AND entrydate > '".$dateneeded."' ORDER BY areaceu";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate > '".$dateneeded."' ORDER BY areaceu";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
 			array_push($this->ceuarray, $newceu);
 		}
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$_SESSION['ncednumber']."' AND entrydate < '".$dateneeded."' ORDER BY areaceu";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate < '".$dateneeded."' ORDER BY areaceu";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
@@ -28,7 +28,7 @@ class ceuinfo {
 	function set_ceuarray(){
 		global $database;
 		$this->ceuarray = array();
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$_SESSION['ncednumber']."' AND entrydate > '".$this->cutoff."' ORDER BY ceudate";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate > '".$this->cutoff."' ORDER BY ceudate";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
@@ -39,7 +39,7 @@ class ceuinfo {
 	function set_archivearray(){
 		$this->archivearray = array();
 		global $database;
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$_SESSION['ncednumber']."' AND entrydate < '".$this->cutoff."' ORDER BY ceudate";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate < '".$this->cutoff."' ORDER BY ceudate";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
@@ -66,7 +66,7 @@ class ceuinfo {
 		return $totalceus;
 	}
 
-	function snapshot() {
+	function snapshot($whatTOdo = true) {
 		?>
 		<table>
 			<tr>
@@ -117,7 +117,7 @@ class ceuinfo {
 			</tr>
 			<? } ?>
 		</table><?
-		echo "<a href='ceupage.php' class='button'>GO TO CEU PAGE</a>";
+		if ($whatTOdo) {echo "<a href='ceupage.php' class='button'>GO TO CEU PAGE</a>";}
 	}
 
 	function showarea($area, $archive=false){

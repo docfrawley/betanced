@@ -1,6 +1,29 @@
 <?php require_once("../includes/initialize.php"); ?>
 <? include("../includes/layouts/header.php"); ?>
 
+<div class=" row show-for-medium-up">
+        <div class="large-1 medium-1 columns"><a href="index.php"><img src="img/logo.png" alt="NCED Online. Click for Home."></a></div>
+        <div class="large-4 medium-5 columns"><img src="img/NCED word.gif" alt=""></div>
+        <div class="large-3 columns show-for-large-up"></div>
+        <div class="large-4 medium-6 columns">
+        <? $announcements = new all_announcements(); 
+        if ($announcements->num_announce() > 0) {
+          ?>
+          <ul class="example-orbit-content" data-orbit data-options="animation_speed:500;
+                                              animation:slide;
+                                              animation_speed:500;
+                                              pause_on_hover:false;
+                                              animation_speed:500;
+                                              navigation_arrows:false;
+                                              slide_number: false;
+                                              bullets: false">
+            <? $announcements->print_announcements(); ?>
+          </ul>
+        
+      <? } ?>
+      </div>
+  </div>
+
 <div class="row">
 	<div class="medium-4 columns">
 		<div class="panel">

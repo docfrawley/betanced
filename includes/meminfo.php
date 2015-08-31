@@ -15,9 +15,9 @@ class infobject {
 	private $cphone;
 	private $prefphone;
 	
-	function __construct() {
+	function __construct($ncednum) {
 		global $database;
-		$sql="SELECT * FROM nceddata WHERE ncednum ='".$_SESSION['ncednumber']."'";
+		$sql="SELECT * FROM nceddata WHERE ncednum ='".$ncednum."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		$this->lname = $value['lname'];

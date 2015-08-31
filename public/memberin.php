@@ -3,9 +3,9 @@
 
 if (isset($_SESSION['ncednumber'])) {
 
-$member = new memobject();
-$meminfo = new infobject();
-$ceuinfo = new ceuinfo($member->set_archivedate());
+$member = new memobject($_SESSION['ncednumber']);
+$meminfo = new infobject($_SESSION['ncednumber']);
+$ceuinfo = new ceuinfo($_SESSION['ncednumber'], $member->set_archivedate());
 ?> <div class = "row"> <?
     ?> <div class = "medium-6 columns"> 
             <div class="row">
