@@ -52,13 +52,14 @@ function getrenewtime($renew_year, $currentyear) {
 
 function get_state($abbrvst) {
 	global $database;
+	if ($abbrvst=="State") { return "State"; }
 	$sql = "SELECT * FROM states WHERE abbrv = '".$abbrvst."'";
 	$result_set = $database->query($sql);
 	$value = $database->fetch_array($result_set);
 	return $value['fullname'];
 }
 
-function statelist($thestate) {
+function statelist($thestate="State") {
 	global $database;
 	$sql = "SELECT * FROM states";
 	$result_set = $database->query($sql);?>

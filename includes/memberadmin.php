@@ -43,7 +43,7 @@ class memadmin {
 
 	function search_member_form(){
 		?> 
-		 <form action="ncedamdin.php" method="POST">
+		 <form action="ncedadmin.php" method="POST">
 		 	<fieldset>
 		 			<legend>Search for a Member</legend>
 		 			Enter NCED number <strong>OR</strong> Last Name<br/><br/>
@@ -111,12 +111,139 @@ class memadmin {
 
 	function find_memberN($number){
 		global $database;
+		$sql="SELECT * FROM renewal WHERE ncednum='.$number.'";
+		$result_set = $database->query($sql);
+		$value = $database->fetch_array($result_set);
+		if ($value['ncednum']==$number) {return $number;}
+		else {return 0;}
 	}
 
 	function find_memberL($lname){
 		global $database;
+		$sql="SELECT * FROM renewal WHERE lname='.$lname.'";
+		$result_set = $database->query($sql);
+		if ($database->num_rows($result_set) >1) {
+			echo "There are more than one member with that last name.<br/>Please chose from the members listed below.<br/>"
+			?><ul><?
+			while ($value = $database->fetch_array($result_set)) {
+				echo "<li><a href='ncedadmin.php?ncednumberL={$value["ncednum"]}'>{$value['fname']} {$value['lname']}</a></li>"
+			}
+			?></ul><?
+		} elseif ($database->num_rows($result_set)==1) {
+			$value = $database->fetch_array($result_set);
+			return $value['ncednum'];
+		} else {
+			return 0;
+		}
+	}
+
+	function get_memberN($info){
+		if ($info['ncednumber']) {$ncednumber = $this->find_memberN($info['ncednumber']);}
+		else {$ncednumber = $this->find_memberL($info['LastName']);}
+		if ($ncednumber<1) { $_SESSION['findmember']="What you entered does not correspond to any member info of file.";}
+	}
+
+
+	function add_member($info){
+		global $database;
+		$renewyear = date('Y')+1;
+		$status = "RENEWED";
+		$ncednum = (int) $database->escape_value($info['ncednum']);
+		$sql = "INSERT INTO renewal (";
+		$sql .= "ncednum, fname, lname, status, renewyear";
+ 		$sql .= ") VALUES ('";
+ 		$sql .= $ncednum ."', '";
+		$sql .= $database->escape_value($info['fname']) ."', '";
+		$sql .= $database->escape_value($info['lname']) ."', '";
+		$sql .= $status ."', '";
+		$sql .= $renewyear ."')";
+		$database->query($sql);
+
+		$sql = "INSERT INTO nceddata (";
+		$sql .= "ncednum, fname, lname, email, street, city, state, zip, wphone, hphone, cphone";
+ 		$sql .= ") VALUES ('";
+ 		$sql .= $ncednum ."', '";
+		$sql .= $database->escape_value($info['fname']) ."', '";
+		$sql .= $database->escape_value($info['lname']) ."', '";
+		$sql .= $database->escape_value($info['email']) ."', '";
+		$sql .= $database->escape_value($info['staddress']) ."', '";
+		$sql .= $database->escape_value($info['city']) ."', '";
+		$sql .= $database->escape_value($info['state']) ."', '";
+		$sql .= $database->escape_value($info['zip']) ."', '";
+		$sql .= $database->escape_value($info['wphone']) ."', '";
+		$sql .= $database->escape_value($info['hphone']) ."', '";
+		$sql .= $database->escape_value($info['cphone']) ."')";
+		$database->query($sql);
+
+		$today = date("F j, Y");
+		$sql = "INSERT INTO memstart (";
+		$sql .= "ncednum, whenst";
+ 		$sql .= ") VALUES ('";
+ 		$sql .= $ncednum ."', '";
+		$sql .= $today ."')";
+		$database->query($sql);
+
+		array_push($this->allmem, $info);
+
+		$_SESSION['memmessage']="New Member has been added.";
 	}
 	
+	function new_member_form(){
+		?> 
+		 <form action="ncedadmin.php" method="POST">
+		 	<fieldset>
+		 			<legend>Add New Member</legend>
+		 	<div class="row">
+		 		<div class="medium-3 columns">
+		 			<input type="text" name="ncednum" placeholder="NCED Number (# <? echo $this->get_highnum(); ?>)"/>
+		 		</div>
+		 		<div class="medium-5 columns">
+		 			<input type="text" name="email" placeholder="Email Address"/>
+		 		</div>
+		 		<div class="medium-4 columns">
+		 		</div>
+		 	</div>		
+		 	<div class="row">
+		 		<div class="medium-5 columns">
+		 			<input type="text" name="fname" placeholder="First Name"/>
+		 		</div>
+		 		<div class="medium-7 columns">
+		 			<input type="text" name="lname" placeholder="Last Name"/>
+		 		</div>
+		 	</div>
+		 	<div class="row">
+		 		<div class="medium-4 columns">
+		 			<input type="text" name="staddress" placeholder="Street Address"/>
+		 		</div>
+		 		<div class="medium-4 columns">
+		 			<input type="text" name="city" placeholder="City"/>
+		 		</div>
+		 		<div class="medium-2 columns">
+		 				<? statelist("State"); ?>
+		 		</div>
+		 		<div class="medium-2 columns">
+		 			<input type="text" name="zip" placeholder="Zip"/>
+		 		</div>
+		 	</div>
+		 	<div class="row">
+		 		<div class="medium-4 columns">
+		 			<input type="text" name="wphone" placeholder="Work Phone"/>
+		 		</div>
+		 		<div class="medium-4 columns">
+		 			<input type="text" name="hphone" placeholder="Home Phone"/>
+		 		</div>
+		 		<div class="medium-4 columns">
+		 			<input type="text" name="cphone" placeholder="Cell Phone"/>
+		 		</div>
+		 	</div>
+			<div class="row">
+		 		<div class="small-12 columns">
+        			<input type="submit" value="Submit" class="button tiny radius"/>
+        		</div>
+        	</div>
+        </fieldset>
+        </form><?
+	}
 
 }
 ?>
