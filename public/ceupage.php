@@ -17,7 +17,7 @@ if (isset($_SESSION['ncednumber'])) {
     $archive = isset($_GET['archive']);
     $member = new memobject();
     $meminfo = new infobject();
-    $ceuinfo = new ceuinfo($member->set_archivedate());
+    $ceuinfo = new ceuinfo($_SESSION['ncednumber'], $member->set_archivedate());
     if (isset($_POST['thearea'])){
         $ceuinfo->add_ceu($_POST);
     }

@@ -5,10 +5,12 @@ class ceuinfo {
 	private $ceuarray;
 	private $archivearray;
 	private $cutoff;
+	private $ncednumber;
 	
 	function __construct($ncednumber, $dateneeded) {
 		global $database;
 		$this->cutoff = $dateneeded;
+		$this->ncednumber = $ncednumber;
 		$this->ceuarray = array();
 		$this->archivearray = array();
 		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate > '".$dateneeded."' ORDER BY areaceu";
@@ -28,7 +30,7 @@ class ceuinfo {
 	function set_ceuarray(){
 		global $database;
 		$this->ceuarray = array();
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate > '".$this->cutoff."' ORDER BY ceudate";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$this->ncednumber."' AND entrydate > '".$this->cutoff."' ORDER BY ceudate";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
@@ -39,7 +41,7 @@ class ceuinfo {
 	function set_archivearray(){
 		$this->archivearray = array();
 		global $database;
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate < '".$this->cutoff."' ORDER BY ceudate";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$this->ncednumber."' AND entrydate < '".$this->cutoff."' ORDER BY ceudate";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
