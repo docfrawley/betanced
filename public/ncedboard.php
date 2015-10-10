@@ -6,6 +6,8 @@ if (isset($_SESSION['ncedadmin'])) {
 
 $the_board = new boardadmin();
 $the_board->print_board();
-}
+} ?>
 
+<!-- modal windows -->
+ <?  $the_board->generate_boxes(); 
 include("../includes/layouts/footer.php"); ?>

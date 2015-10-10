@@ -24,12 +24,24 @@ class boardMember {
 		$this->state = $value['state'];
 	}
 
-	function print_member(){
+	function print_member($key){
 		?><table><tr> <?
-		?><td><? echo $this->name; ?></td><?
+		?><td><? echo "<a data-reveal data-reveal-id='".$key."''>".$this->name."</a>"; ?></td><?
 		?><td><? echo $this->title; ?></td><?
-		?><td><? echo $this->bio; ?></td><?
+		?><td><? echo get_state($this->state); ?></td><?
 		?></tr></table> <?
+	}
+
+	function get_name(){
+		return $this->name;
+	}
+
+	function get_title(){
+		return $this->title;
+	}
+
+	function get_bio(){
+		return $this->bio;
 	}
 
 }
