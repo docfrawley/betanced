@@ -182,4 +182,19 @@ function parseToXML($htmlStr)
 	$xmlStr=str_replace("&",'&amp;',$xmlStr);
 	return $xmlStr;
 }
+
+function convert_key($key){
+	$board_array = array(
+		'chair' => 'Chair',
+		'vchair' => 'vice-Chair',
+		'treasurer' => 'Treasurer',
+		'secretary' => 'Secretary',
+		'exam' => 'Exam Chair',
+		'membership' => 'Membership Chair',
+		'profdev' => 'Professional Development',
+		'publicity' => 'Publicity and Advocacy',
+		'pgrowth' => 'Professional Growth and Advisory',
+		);
+	return $board_array[$key];
+}
 ?>

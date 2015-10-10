@@ -6,7 +6,6 @@ class memobject {
 	private $password;
 	private $lname;
 	private $fname;
-	private $display_name;
 	private $memstart;
 	private $ryear;
 	private $memstatus;

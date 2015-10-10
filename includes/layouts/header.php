@@ -171,7 +171,7 @@
           <li class="has-dropdown"><a href="#">ADMIN PAGES</a>
                <ul class="dropdown">
                  <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
-                 <li><a href="#">TWO</a></li>
+                 <li><a href="ncedboard.php">NCED BOARD</a></li>
                  <li><a href="#">THREE</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
