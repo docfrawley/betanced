@@ -98,7 +98,7 @@
                  <ul>
                  		<li><a href="#">One</a></li>
                     <li><a href="#">Two</a></li>
-                    <li><a href="#">Three</a></li>
+                    <li><a href="board.php">BOARD OF DIRECTORS</a></li>
                     <li><a href="#">Four</a></li>
                   </ul>
                 </li>
@@ -144,7 +144,7 @@
   	           <ul class="dropdown">
   	             <li><a href="#">ONE</a></li>
   	             <li><a href="#">TWO</a></li>
-                 <li><a href="#">THREE</a></li>
+                 <li><a href="board.php">BOARD OF DIRECTORS</a></li>
                  <li><a href="#">FOUR</a></li>
   	           </ul>
 	          </li>
