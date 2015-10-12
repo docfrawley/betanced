@@ -4,10 +4,15 @@
 if (isset($_SESSION['ncedadmin'])) {
     $member_admin = new memadmin();
 
-$the_board = new boardadmin();
-$the_board->change_form();
-} ?>
+$the_board = new boardadmin(); ?>
+<div class="row"> 
+	<div class="medium-6 columns">
+		<? $the_board->change_form(); ?>
+	</div>
+	<div class="medium-6 columns">
+		<? $the_board->members_form(); ?>
+	</div>
+</div> <?
+} 
 
-<!-- modal windows -->
- <?  $the_board->generate_boxes(); 
 include("../includes/layouts/footer.php"); ?>

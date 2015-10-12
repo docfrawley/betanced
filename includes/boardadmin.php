@@ -76,15 +76,27 @@ class boardadmin {
 				 		</label>
 		 			</div>
 		 		</div>
-				<div class="row">
+				<?
+			}
+		} ?>
+		<div class="row">
 		 			<div class="small-12 columns">
         				<input type="submit" value="Submit" class="button tiny radius"/>
         			</div>
         		</div>
         </form><?
-			}
-		}
+	}
 
+	function members_form(){
+		$this->set_poss_board(); ?>
+		<div class="row">
+			<div class="small-12 columns"> <?
+				foreach ($this->possible_board as $nvalue) {
+				    $bMember = new boardMember($nvalue);
+				    echo '<a href="?member='. $nvalue.'&task=edit">'.$bMember->get_name().'</a><br/>';
+				} ?>
+			</div>
+		</div><?
 	}
 
 }
