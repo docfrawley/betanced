@@ -38,34 +38,78 @@ class boardadmin {
 		}
 	}
 
-	function add_bmember_form(){
+	function add_bmember_form($value = 0){
+		$amEditing = ($value>0);
+		if ($amEditing){
+			$boardMember = new boardMember($value);
+			$title = "<legend>Edit or Delete Board Member</legend>
+		 			Click on DELETE button to delete member from board or edit content hit Submit.<br/><br/>";
+		} else {
+			$title = "<legend>Add Possible Board Member</legend>
+		 			Enter NCED number <strong>OR</strong> Last Name<br/><br/>";
+		}
 		?> 
 		 <form action="ncedboard.php" method="POST">
-		 	<fieldset>
-		 			<legend>Add Possible Board Member</legend>
-		 			Enter NCED number <strong>OR</strong> Last Name<br/><br/>
+		 	<fieldset><? 
+		 		echo $title;
+		 	?>
 		 	<div class="row">
-		 		<div class="small-3 columns">
-		 			<input type="text" name="ncednumber" placeholder="NCED Number"/>
-		 		</div>
-		 		<div class="small-6 columns">
-		 			<input type="text" name="LastName" placeholder="Last Name"/>
-		 		</div>
-		 		<div class="small-3 columns">
-		 			<input type="text" name="title" placeholder="Title(e.g. M.Ed.)"/>
+		 		<?
+		 			if ($amEditing){ 
+		 				echo "<div class='small-8 columns'>";
+		 				echo "<h3>".$boardMember->get_name()."</h3>";
+		 				echo "</div>";
+		 			} else {?>
+		 				<div class="small-3 columns">
+		 					<input type="text" name="ncednum" placeholder="NCED #"/>
+		 				</div>
+				 		<div class="small-5 columns">
+				 			<input type="text" name="LastName" placeholder="Last Name"/>
+				 		</div>
+		 		 <? } ?>
+		 		<div class="small-4 columns">
+		 			<?  
+		 			if ($amEditing){
+		 				echo '<input type="text" name="bmtitle" value="'.$boardMember->get_title().'"/>';
+		 			} else {
+		 				echo '<input type="text" name="bmtitle" placeholder="Title(e.g. M.Ed.)"/>';
+		 			} ?>
 		 		</div>
 		 	</div>
 		 	<div class="row">
 		 		<div class="small-12 columns">
 		 			<label>bio</label>
         			<textarea cols="40" rows="5" name="bio">
+        				<?
+        				if ($amEditing){
+        					echo $boardMember->get_bio();
+        				}
+        				?>
         			</textarea>
         		</div>
         	</div>
+        	<? $task=($amEditing) ? "mupdate" : "madd" ;?>
+        	<input type="hidden" name="task" value="<? echo $task; ?>"/>
 			<div class="row">
-		 		<div class="small-12 columns">
-        			<input type="submit" value="Submit" class="button tiny radius"/>
-        		</div>
+				<?
+					if ($amEditing){
+						?>
+						<div class="small-6 columns">
+        					<input type="submit" value="Submit" class="button tiny radius"/>
+        				</div>
+        				<div class="small-6 columns text-right">
+        					<? echo '<a href="?member='. $value.'&task=mdelete" class="button tiny radius">DELETE</a>'; ?>
+        				</div>
+						<?
+
+					} else {
+						?>  
+						<div class="small-12 columns">
+        					<input type="submit" value="Submit" class="button tiny radius"/>
+        				</div>
+						<?
+					}
+				?>
         	</div>
         </fieldset>
         </form><?
@@ -150,11 +194,23 @@ class boardadmin {
 					<?
 					foreach ($this->possible_board as $nvalue) {
 					    $bMember = new boardMember($nvalue);
-					    echo '<a href="?member='. $nvalue.'&task=edit">'.$bMember->get_name().'</a><br/>';
+					    echo '<a href="?member='. $nvalue.'&task=medit_form">'.$bMember->get_name().'</a><br/>';
 					} ?>
 				</fieldset>
 			</div>
 		</div><?
+	}
+
+	function bmember_add($info){
+		global $database;
+		$sql = "INSERT INTO binfo (";
+		$sql .= "ncednum, bmtitle, bio";
+ 		$sql .= ") VALUES ('";
+		$sql .= $database->escape_value($info['ncednum']) ."', '";
+		$sql .= $database->escape_value($info['bmtitle']) ."', '";
+		$sql .= $database->escape_value($info['bio']) ."')";
+		$database->query($sql);
+		$_SESSION['boardMessage']="You have successfully added a new possible board member.";
 	}
 
 }
