@@ -201,8 +201,22 @@ class boardadmin {
 		</div><?
 	}
 
+	function checkIfmember($ncednum, $lname){
+		global $database;
+		if ($ncednum==0 && $lname==""){
+			echo "Please make sure to type in an nced number or last name";
+			$this->add_bmember_form();
+		} else {
+			$sql="SELECT * FROM nceddata WHERE ncednum='".$ncednum."'";
+			$result_set = $database->query($sql);
+			return $database->fetch_array($result_set);
+		}
+	}
+
 	function bmember_add($info){
 		global $database;
+		$temp = $this->checkIfmember($database->escape_value($info['ncednum']), $database->escape_value($info['LastName']));
+		print_r($temp);
 		$sql = "INSERT INTO binfo (";
 		$sql .= "ncednum, bmtitle, bio";
  		$sql .= ") VALUES ('";

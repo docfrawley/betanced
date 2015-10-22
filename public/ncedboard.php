@@ -25,7 +25,7 @@ $the_board = new boardadmin(); ?>
         					$the_board->bmember_delete($_POST);
         					break;
         				case 'madd':
-        					$the_board->bmember_add($_POST);
+                            $the_board->bmember_add($_POST);        					
         					break;	
         				default:
         					break;
