@@ -12,26 +12,32 @@ $the_board = new boardadmin(); ?>
 				<? 
 				$task=isset($_GET['task']) ? $_GET['task'] : "" ;
         			if (!$task) $task=isset($_POST['task']) ? $_POST['task'] : "" ;
-        		if (!$task){ $the_board->add_bmember_form(); }	
-        		else {
-        			switch ($task) {
-        				case 'medit_form':
-        					$the_board->add_bmember_form($_GET['member']);
-        					break;
-        				case 'mupdate':
-        					$the_board->bmember_update($_POST);
-        					break;
-        				case 'mdelete':
-        					$the_board->bmember_delete($_POST);
-        					break;
-        				case 'madd':
-                            $the_board->bmember_add($_POST);        					
-        					break;	
-        				default:
-        					break;
-        			}
+                if (isset($_POST['ncednumber']) || isset($_POST['LastName']) || isset($_GET['ncednumberL'])){ 
+                        $ncednumber=isset($_GET['ncednumberL']) ? $_GET['ncednumberL'] : $member_admin->get_memberN($_POST, 'ncedboard'); 
+                        $task = 'medit_form';
+                    }    
+        		switch ($task) {
+        			case 'medit_form':
+                        $ncedNumber = isset($ncednumber) ? $ncednumber : $_GET['member'];
+        				$the_board->add_bmember_form($ncedNumber);
+        				break;
+        			case 'mupdate':
+                        echo "mupdate";
+        				$the_board->bmember_update($_POST);
+        				break;
+        			case 'mdelete':
+        				$the_board->bmember_delete($_GET['member']);
+        				break;
+        			case 'madd':
+                        $the_board->bmember_add($_POST);        					
+        				break;	
+        			default:
+        				break;
         		}
-				 ?>
+                if ($task!='medit_form'){ 
+                    $member_admin->search_member_form("ncedboard"); 
+                } 
+                ?>
 			</div>
 			<div class="medium-12 columns">
 				<? $the_board->change_form(); ?>

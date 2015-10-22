@@ -41,11 +41,17 @@ class memadmin {
 		return $numberOf;
 	}
 
-	function search_member_form(){
+	function search_member_form($whichPage){
 		?> 
-		 <form action="ncedadmin.php" method="POST">
+		 <form action="<? echo $whichPage; ?>.php" method="POST">
 		 	<fieldset>
-		 			<legend>Search for a Member</legend>
+		 		<?
+		 		if ($whichPage == "ncedboard"){
+		 			echo "<legend>Search for a Member to List as Board Member</legend>";
+		 		} else {
+		 			echo "<legend>Search for a Member </legend>";
+		 		}
+		 		?>
 		 			Enter NCED number <strong>OR</strong> Last Name<br/><br/>
 		 	<div class="row">
 		 		<div class="small-5 columns">
@@ -118,7 +124,7 @@ class memadmin {
 		else {return 0;}
 	}
 
-	function find_memberL($lname){
+	function find_memberL($lname, $where){
 		global $database;
 		$sql="SELECT * FROM renewal WHERE lname='".$lname."'";
 		$result_set = $database->query($sql);
@@ -126,7 +132,7 @@ class memadmin {
 			echo "There are more than one member with that last name.<br/>Please chose from the members listed below.<br/>"
 			?><ul><?
 			while ($value = $database->fetch_array($result_set)) {
-				echo "<li><a href='ncedadmin.php?ncednumberL={$value["ncednum"]}'>{$value['fname']} {$value['lname']}</a></li>";
+				echo "<li><a href='{$where}.php?ncednumberL={$value["ncednum"]}'>{$value['fname']} {$value['lname']}</a></li>";
 			}
 			?></ul><?
 		} elseif ($database->num_rows($result_set)==1) {
@@ -137,10 +143,10 @@ class memadmin {
 		}
 	}
 
-	function get_memberN($info){
+	function get_memberN($info, $where){
 		if ($info['ncednumber']) {$ncednumber = $this->find_memberN($info['ncednumber']);}
-		else {$ncednumber = $this->find_memberL($info['LastName']);}
-		if ($ncednumber<1) { $_SESSION['findmember']="What you entered does not correspond to any member info of file.";}
+		else {$ncednumber = $this->find_memberL($info['LastName'], $where);}
+		if ($ncednumber<1) { $_SESSION['findmember']="What you entered does not correspond to any member info on file.";}
 		return $ncednumber;
 	}
 

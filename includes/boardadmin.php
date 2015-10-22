@@ -38,15 +38,13 @@ class boardadmin {
 		}
 	}
 
-	function add_bmember_form($value = 0){
-		$amEditing = ($value>0);
-		if ($amEditing){
-			$boardMember = new boardMember($value);
+	function add_bmember_form($value){
+		$boardMember = new boardMember($value);
+		if ($boardMember->is_current()){
 			$title = "<legend>Edit or Delete Board Member</legend>
 		 			Click on DELETE button to delete member from board or edit content hit Submit.<br/><br/>";
 		} else {
-			$title = "<legend>Add Possible Board Member</legend>
-		 			Enter NCED number <strong>OR</strong> Last Name<br/><br/>";
+			$title = "<legend>Add Possible Board Member</legend>";
 		}
 		?> 
 		 <form action="ncedboard.php" method="POST">
@@ -55,61 +53,34 @@ class boardadmin {
 		 	?>
 		 	<div class="row">
 		 		<?
-		 			if ($amEditing){ 
-		 				echo "<div class='small-8 columns'>";
-		 				echo "<h3>".$boardMember->get_name()."</h3>";
-		 				echo "</div>";
-		 			} else {?>
-		 				<div class="small-3 columns">
-		 					<input type="text" name="ncednum" placeholder="NCED #"/>
-		 				</div>
-				 		<div class="small-5 columns">
-				 			<input type="text" name="LastName" placeholder="Last Name"/>
-				 		</div>
-		 		 <? } ?>
+		 		echo "<div class='small-8 columns'>";
+		 		echo "<h3>".$boardMember->get_name()."</h3>";
+		 		echo "</div>";
+		 		?>
 		 		<div class="small-4 columns">
-		 			<?  
-		 			if ($amEditing){
-		 				echo '<input type="text" name="bmtitle" value="'.$boardMember->get_title().'"/>';
-		 			} else {
-		 				echo '<input type="text" name="bmtitle" placeholder="Title(e.g. M.Ed.)"/>';
-		 			} ?>
+		 			<input type="text" name="bmtitle" value="<? echo $boardMember->get_title(); ?>" placeholder="Title(e.g. M.Ed.)" />
 		 		</div>
 		 	</div>
 		 	<div class="row">
 		 		<div class="small-12 columns">
 		 			<label>bio</label>
         			<textarea cols="40" rows="5" name="bio">
-        				<?
-        				if ($amEditing){
-        					echo $boardMember->get_bio();
-        				}
-        				?>
+        				<?echo $boardMember->get_bio();?>
         			</textarea>
         		</div>
         	</div>
-        	<? $task=($amEditing) ? "mupdate" : "madd" ;?>
+        	<? $task=($boardMember->is_current()) ? "mupdate" : "madd" ;?>
         	<input type="hidden" name="task" value="<? echo $task; ?>"/>
+        	<input type="hidden" name="whatnumber" value="<? echo $value; ?>"/>
 			<div class="row">
-				<?
-					if ($amEditing){
-						?>
-						<div class="small-6 columns">
-        					<input type="submit" value="Submit" class="button tiny radius"/>
-        				</div>
-        				<div class="small-6 columns text-right">
-        					<? echo '<a href="?member='. $value.'&task=mdelete" class="button tiny radius">DELETE</a>'; ?>
-        				</div>
-						<?
-
-					} else {
-						?>  
-						<div class="small-12 columns">
-        					<input type="submit" value="Submit" class="button tiny radius"/>
-        				</div>
-						<?
-					}
-				?>
+				<div class="small-6 columns">
+        			<input type="submit" value="Submit" class="button tiny radius"/>
+        		</div>
+        		<div class="small-6 columns text-right"><? 
+        			if ($boardMember->is_current()){
+        				echo '<a href="?member='. $value.'&task=mdelete" class="button tiny radius">DELETE</a>';
+        			}?>
+        		</div>
         	</div>
         </fieldset>
         </form><?
@@ -168,17 +139,19 @@ class boardadmin {
 		 	<legend>Click on Board Position to Change Member</legend>
 		 	<div class="row">
 		 		<div class="small-12 columns">
+		 			<table>
 				<?
 				foreach ($this->the_board as $key => $value) {
 					if ($key != 'boardindex'){
 						$title = convert_key($key);
-						$boardMember = new boardMember($value);
-						echo '<a href="?member='. $value.'&position='.$key.'">'.$title.'</a>: ';
-						echo $boardMember->get_name();
-						echo "<br/>";
+						if ($title !=""){
+							$boardMember = new boardMember($value);
+							echo '<tr><td><a href="?member='. $value.'&position='.$key.'">'.$title.'</a>: </td><td>';
+							echo $boardMember->get_name()."</td></tr>";
+						}
 					}
 				}?>	
-				<br/>
+				</table>
 				</div>
 			</div>
         </fieldset>
@@ -201,31 +174,27 @@ class boardadmin {
 		</div><?
 	}
 
-	function checkIfmember($ncednum, $lname){
-		global $database;
-		if ($ncednum==0 && $lname==""){
-			echo "Please make sure to type in an nced number or last name";
-			$this->add_bmember_form();
-		} else {
-			$sql="SELECT * FROM nceddata WHERE ncednum='".$ncednum."'";
-			$result_set = $database->query($sql);
-			return $database->fetch_array($result_set);
-		}
-	}
-
 	function bmember_add($info){
 		global $database;
-		$temp = $this->checkIfmember($database->escape_value($info['ncednum']), $database->escape_value($info['LastName']));
 		print_r($temp);
 		$sql = "INSERT INTO binfo (";
 		$sql .= "ncednum, bmtitle, bio";
  		$sql .= ") VALUES ('";
-		$sql .= $database->escape_value($info['ncednum']) ."', '";
+		$sql .= $database->escape_value($info['whatnumber']) ."', '";
 		$sql .= $database->escape_value($info['bmtitle']) ."', '";
 		$sql .= $database->escape_value($info['bio']) ."')";
 		$database->query($sql);
 		$_SESSION['boardMessage']="You have successfully added a new possible board member.";
 	}
+
+	function bmember_delete($value){
+		global $database;
+		echo "I'm here".$value;
+		$sql = "DELETE FROM binfo ";
+		$sql .= "WHERE ncednum='".$value."' ";
+		$sql .= "LIMIT 1";
+		$database->query($sql);
+ 	}
 
 }
 ?>

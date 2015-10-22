@@ -7,6 +7,7 @@ class boardMember {
 	private $bio;
 	private $state;
 	private $title;
+	private $currentB;
 	
 	function __construct($ncednum) {
 		global $database;
@@ -15,13 +16,24 @@ class boardMember {
 		$this->name = $bMember->get_displayname();
 		$sql="SELECT * FROM binfo WHERE ncednum ='".$ncednum."'";
 		$result_set = $database->query($sql);
-		$value = $database->fetch_array($result_set);
-		$this->title = $value['bmtitle'];
-		$this->bio = $value['bio'];
-		$sql="SELECT * FROM nceddata WHERE ncednum ='".$ncednum."'";
-		$result_set = $database->query($sql);
-		$value = $database->fetch_array($result_set);
-		$this->state = $value['state'];
+		$this->currentB = ($database->num_rows($result_set) >0 );
+		if ($this->currentB) {
+			$value = $database->fetch_array($result_set);
+			$this->title = $value['bmtitle'];
+			$this->bio = $value['bio'];
+			$sql="SELECT * FROM nceddata WHERE ncednum ='".$ncednum."'";
+			$result_set = $database->query($sql);
+			$value = $database->fetch_array($result_set);
+			$this->state = $value['state'];
+		} else {
+			$this->title = "";
+			$this->bio = "";
+			$this->state = "";
+		}
+	}
+
+	function is_current(){
+		return $this->currentB;
 	}
 
 	function print_member($key){

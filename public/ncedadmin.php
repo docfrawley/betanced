@@ -9,7 +9,7 @@ if (isset($_SESSION['ncedadmin'])) {
     }
 
     if (isset($_POST['ncednumber']) || isset($_POST['LastName']) || isset($_GET['ncednumberL'])){ 
-        $ncednumber=isset($_GET['ncednumberL']) ? $_GET['ncednumberL'] : $member_admin->get_memberN($_POST); ;
+        $ncednumber=isset($_GET['ncednumberL']) ? $_GET['ncednumberL'] : $member_admin->get_memberN($_POST, 'ncedadmin');
         $member = new memobject($ncednumber);
         $meminfo = new infobject($ncednumber);
         $ceuinfo = new ceuinfo($ncednumber, $member->set_archivedate());?>
@@ -56,7 +56,7 @@ if (isset($_SESSION['ncedadmin'])) {
         </div> 
         <div class = "row">
             <div class = "medium-6 columns"> <?
-                $member_admin->search_member_form(); ?>
+                $member_admin->search_member_form("ncedadmin"); ?>
             </div>
             <div class = "medium-6 columns"> <?
                 if (isset($_POST['renewal'])) { $member_admin->update_renew($_POST); }
