@@ -31,10 +31,18 @@ $the_board = new boardadmin(); ?>
         			case 'madd':
                         $the_board->bmember_add($_POST);        					
         				break;	
+                    case 'bchange':
+                    case 'bchangeU':
+                        if ($task == "bchangeU"){
+                            $the_board->update_position($_POST); 
+                        } else {
+                            $the_board->edit_position_form($_GET['member'], $_GET['position']);  
+                        }                      
+                        break;      
         			default:
         				break;
         		}
-                if ($task!='medit_form'){ 
+                if ($task!='medit_form' && $task != 'bchange'){ 
                     $member_admin->search_member_form("ncedboard"); 
                 } 
                 ?>

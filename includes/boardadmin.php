@@ -8,23 +8,32 @@ class boardadmin {
 	function __construct() {
 		global $database;
 		$the_board = array();
-		$sql="SELECT * FROM ncedboard";
-		$result_set = $database->query($sql);
-		$this->the_board = $database->fetch_array($result_set);
-		$this->possible_board = array();
+		$this->the_board = array();
 	}
 
 	function print_board($admin=false){
-		foreach ($this->the_board as $key => $value) {
-			if ($key != 'boardindex'){
-				$title = convert_key($key);
-				$boardMember = new boardMember($value);
-				echo $title.": ";
-				$boardMember->print_member($key);
-				echo "<br/>";
-			}
-			
-		}
+		$this->set_board();
+
+		?><table><?
+				foreach ($this->the_board as $key => $value) {
+					if ($key != 'boardindex'){
+						$title = convert_key($key);
+						if ($title !=""){
+							$boardMember = new boardMember($value);
+							echo '<tr><td>'.$title.'</td><td>';
+							echo $boardMember->print_member($key)."</td></tr>";
+						}
+					}
+				}
+		?></table><?
+	}
+
+	function set_board(){
+		global $database;
+		$this->the_board = array();
+		$sql="SELECT * FROM ncedboard";
+		$result_set = $database->query($sql);
+		$this->the_board = $database->fetch_array($result_set);
 	}
 
 	function set_poss_board(){
@@ -86,7 +95,7 @@ class boardadmin {
         </form><?
 	}
 
-	function edit_position_form($position, $person){
+	function edit_position_form($person, $position){
 		$this->set_poss_board();
 		$title = convert_key($position);
 		?><form action="ncedboard.php" method="post">
@@ -94,18 +103,18 @@ class boardadmin {
 		 	<legend>Change Board Member for <? echo $title; ?> </legend>
 			<div class="row">
 		 		<div class="small-12 columns"><?
-					$boardMember = new boardMember($person);
-						?><label><? echo $title.": "; ?>
-					 		<select name="<? echo $position; ?>">
-					 			<option selected="selected" value="<? echo $person; ?>"><? echo $boardMember->get_name(); ?></option>
-		        				<? foreach ($this->possible_board as $nvalue) {
-		        					$bMember = new boardMember($nvalue);
-		        					echo '<option value="'. $nvalue. '">'.$bMember->get_name().'</option>';
-		        				} ?>
-				 			</select>
-				 		</label>
+					$boardMember = new boardMember($person);?>
+					 <select name="person">
+					 	<option selected="selected" value="<? echo $person; ?>"><? echo $boardMember->get_name(); ?></option>
+		        		<? foreach ($this->possible_board as $nvalue) {
+		        			$bMember = new boardMember($nvalue);
+		        			echo '<option value="'. $nvalue. '">'.$bMember->get_name().'</option>';
+		        		   } ?>
+				 	 </select>
 		 		</div>
 		 	</div>
+		 	<input type="hidden" name="position" value="<? echo $position; ?>"/>
+		 	<input type="hidden" name="task" value="bchangeU"/>
 			<div class="row">
 		 		<div class="small-12 columns">
         			<input type="submit" value="Submit" class="button tiny radius"/>
@@ -113,6 +122,13 @@ class boardadmin {
         	</div>
         	</fieldset>
         </form><?
+	}
+
+	function update_position($info){
+		global $database;
+		$sql = "UPDATE ncedboard SET ";
+		$sql .= $database->escape_value($info['position'])."='". $database->escape_value($info['person']) ."'";
+		$database->query($sql);
 	}
 
 
@@ -133,7 +149,7 @@ class boardadmin {
   	}
 	
 	function change_form(){
-		$this->set_poss_board();
+		$this->set_board();
 		?><form action="ncedboard.php" method="post">
 		<fieldset>
 		 	<legend>Click on Board Position to Change Member</legend>
@@ -146,7 +162,7 @@ class boardadmin {
 						$title = convert_key($key);
 						if ($title !=""){
 							$boardMember = new boardMember($value);
-							echo '<tr><td><a href="?member='. $value.'&position='.$key.'">'.$title.'</a>: </td><td>';
+							echo '<tr><td><a href="?task=bchange&member='. $value.'&position='.$key.'">'.$title.'</a>: </td><td>';
 							echo $boardMember->get_name()."</td></tr>";
 						}
 					}
