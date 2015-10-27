@@ -2,20 +2,25 @@
 
 class all_announcements {
 	
-	private $an_array = array();
+	private $an_array;
 	
 	function __construct() {
+		$this->an_array=array();
+	}
+
+	function set_announcements(){
 		global $database;
-		$sql="SELECT * FROM announce";
+		$this->an_array=array();
+		$sql="SELECT * FROM announce ORDER BY priority";
 		$result_set = $database->query($sql);
 		while($value = $database->fetch_array($result_set)){ //
 			array_push($this->an_array,$value['id']);
 		} 
 	}
-	
+
 	function num_announce(){
-		$value = count($this->an_array);
-		return $value;
+		$this->set_announcements();
+		return count($this->an_array);
 	}
 	
 	function delete_announce($numentry){
@@ -31,7 +36,7 @@ class all_announcements {
 	
 	function edit_announce($info){
 		global $database;
-		$sql = "UPDATE rcaannounce SET ";
+		$sql = "UPDATE announce SET ";
 		$sql .= "thetitle='". $database->escape_value($info['thetitle']) ."', ";
 		$sql .= "tbody='". $database->escape_value($info['tbody']) ."', ";
 		$sql .= "college='". $database->escape_value($info['thecollege']) ."', ";
@@ -52,81 +57,30 @@ class all_announcements {
 		else {echo "<br/>Announcement did not post.";}
 	}
 	
-	function get_content($numentry) {
-		global $database;
-		$sql = "SELECT * FROM rcaannounce WHERE numentry='".$numentry."'";
-		$result_set = $database->query($sql);
-		$value = $database->fetch_array($result_set);
-		return $value;
-	}
-	
-	function print_announcements() {
+	function print_announcements($editing = false){
+		$this->set_announcements();
 		$count = 1;
 		foreach ($this->an_array as $ind_announce) {
 			$info = new announceobject($ind_announce);
-			?> 	<li data-orbit-slide="headline-<? echo $count; ?> ">
+			if ($editing){
+				?> <tr><td>
+				<a href="?task=editA&idnum=<? echo $info->get_id(); ?>"><? echo $info->get_title(); ?></a></br>
+				<? echo $info->get_announce(); ?>
+				</td><td><a href="?task=deleteA&idnum=<? echo $info->get_id(); ?>" class="button tiny radius">DELETE</a>
+				</td></tr><?
+			} else {
+				?> 	<li data-orbit-slide="headline-<? echo $count; ?> ">
 	              <div>
-	                <h3><? echo $info->get_title(); ?></h3>
+	                <h4><? echo $info->get_title(); ?></h4>
 	                <h5><? echo $info->get_announce(); ?></h5>
 	              </div>
             	</li>
-            <?
+            	<?
+			}
+			
             $count++;
 		}
 	}
 	
-	
-	function announcment_form(){
-		global $database;
-				
-					?><br/><form action = "<? echo $self; ?>" method="post">
-                    <table><tr><td>Title:</td><td><input type="text" name="thetitle" value="<? echo $athetitle; ?>"/></td></tr></table>
-					<table><tr><td>Announcement:</td><tr>
-                    <tr><td> <textarea name="tbody" rows="7" cols="40"><? echo $atbody; ?>
-							</textarea></td></tr></table>
-                            <table><tr><td>Date When Take Down Post</td></tr></table>
-                            <table><tr><td>Month</td><td>Day</td><td>Year</td></tr>
-                            <tr><td>
-						<select name="month">
-							<option selected="selected" value="<? echo $anummonth; ?>"><? echo $amonth; ?></option>
-							<? GetMonths(); ?>
-							</select></td><td>
-						<select name="day">
-							<option selected="selected" "<? echo $aday; ?>"><? echo $aday; ?></option>
-							<? GetDays(); ?>
-							</select>  </td><td>
-							<select name="year">
-								<option selected="selected" value="<? echo $ayear; ?>"><? echo $ayear; ?></option>
-								<? GetYears(); ?>  
-							</select></td></tr></table>
-							<table><tr><td> This Announcement is for:</td><td>
-                            <? if ($athecollege =="All") { 
-									?> <input type="radio" name="thecollege" value="All" checked/> All RCAs <br/><?
-								} else { // ($athecollege =="All")
-									?> <input type="radio" name="thecollege" value="All"/> All RCAs <br/> <?
-								} // ($athecollege =="All")
-								
-								if ($athecollege ==$college) { 
-									?> <input type="radio" name="thecollege" value="<? echo $college; ?>" checked/> <? echo $college; ?> RCAs<?
-								}else { //if ($athecollege ==$college)
-									?> <input type="radio" name="thecollege" value="<? echo $college; ?>"/> <? echo $college; ?> RCAs <?
-								} // if ($athecollege ==$college)
-							?></td></tr>
-							<input type="hidden" name="numentry" value="<? echo $numentry; ?>"/>
-							<input type="hidden" name="posted" value="<? echo date('U'); ?>"/>
-							<input type="hidden" name="taskannounce" value="addedit"/>
-							<input type="hidden" name="whichform" value="announce"/>
-							<tr><td><input type="submit" value="submit" /></td></tr></table>
-							</form><?
-							if (($numentry) AND ($whichform=='announce')) {
-								echo ("<a href='../public/rcahome.php?numentry=".$numentry."&taskannounce=deleteannounce&whichform=announce'>".'DELETE THIS EVENT'."</a>"); 
-							} // if (($numentry) AND ($whichform=='announce'))
-
-	}
-
-	
-	
-	
-
 }
 ?>

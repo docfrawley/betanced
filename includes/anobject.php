@@ -4,6 +4,8 @@ class announceobject {
 	
 	private $announcement;
 	private $title;
+	private $idnum;
+	private $priority;
 	
 	function __construct($id) {
 		global $database;
@@ -12,6 +14,8 @@ class announceobject {
 		$value = $database->fetch_array($result_set);
 		$this->title = $value['title'];
 		$this->announcement = $value['announcement'];
+		$this->idnum = $value['id'];
+		$this->priority = $value['priority'];
 	}
 	
 	function delete_announce($numentry){
@@ -54,6 +58,14 @@ class announceobject {
 
 	function get_title() {
 		echo $this->title;
+	}
+
+	function get_id() {
+		echo $this->idnum;
+	}
+
+	function get_priority() {
+		echo $this->priority;
 	}
 }
 ?>

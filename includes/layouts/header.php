@@ -111,14 +111,23 @@
                  <li><a href="#">FOUR</a></li>
                   </ul>
                 </li>
-                <li><a href="https://www.princeton.edu/collegefacebook/">CONTACT</a></li>
-                <? 
+                <li><a href="#">CONTACT</a></li>
+          <? 
           if (isset($_SESSION['ncednumber'])) { ?> 
           <li class="has-dropdown"><a href="#">MEMBER PAGES</a>
                <ul class="dropdown">
                  <li><a href="memberin.php">MEMBER HOME</a></li>
                  <li><a href="#">TWO</a></li>
                  <li><a href="#">THREE</a></li>
+                 <li><a href="logout.php">LOGOUT</a></li>
+               </ul>
+          </li>
+          <? } elseif (isset($_SESSION['ncedadmin'])) { ?> 
+          <li class="has-dropdown"><a href="#">ADMIN PAGES</a>
+               <ul class="dropdown">
+                 <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
+                 <li><a href="ncedboard.php">NCED BOARD</a></li>
+                 <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>
@@ -156,7 +165,7 @@
                  <li><a href="#">FOUR</a></li>
                   </ul>
               </li>
-          <li><a href="https://www.princeton.edu/collegefacebook/">CONTACT</a></li>
+          <li><a href="#">CONTACT</a></li>
           <? 
           if (isset($_SESSION['ncednumber'])) { ?> 
           <li class="has-dropdown"><a href="#">MEMBER PAGES</a>
@@ -172,7 +181,7 @@
                <ul class="dropdown">
                  <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
                  <li><a href="ncedboard.php">NCED BOARD</a></li>
-                 <li><a href="#">THREE</a></li>
+                 <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>

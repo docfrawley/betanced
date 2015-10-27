@@ -95,6 +95,15 @@ class boardadmin {
         </form><?
 	}
 
+	function bmember_update($info){
+		global $database;
+		$sql = "UPDATE binfo SET ";
+		$sql .= "bmtitle='". $database->escape_value($info['bmtitle'])."', ";
+		$sql .= "bio='". $database->escape_value($info['bio']) ."'";
+		$sql .= " WHERE ncednum='". $database->escape_value($info['whatnumber']) ."'";
+	  	$database->query($sql);		
+	}
+
 	function edit_position_form($person, $position){
 		$this->set_poss_board();
 		$title = convert_key($position);
@@ -192,7 +201,6 @@ class boardadmin {
 
 	function bmember_add($info){
 		global $database;
-		print_r($temp);
 		$sql = "INSERT INTO binfo (";
 		$sql .= "ncednum, bmtitle, bio";
  		$sql .= ") VALUES ('";
