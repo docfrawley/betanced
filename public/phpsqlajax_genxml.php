@@ -13,7 +13,7 @@ while ($row = $database->fetch_array($result_set)){
   echo 'address="' . parseToXML($row['address']) . '" ';
   echo 'lat="' . $row['lat'] . '" ';
   echo 'lng="' . $row['lng'] . '" ';
-  echo 'type="' . $row['type'] . '" ';
+  echo 'content="' . $row['content'] . '" ';
   echo '/>';
 }
 

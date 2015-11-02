@@ -56,10 +56,72 @@
   </div>
 </div>
 <div class="row">
-	<div class="medium-9">
-		<div id="map" style="width: 600px; height: 350px"></div>
+	<div class="medium-8">
+		<div id="map" style="height: 350px"></div>
+
+    <script type="text/javascript">
+    //<![CDATA[
+
+    
+
+    function load() {
+      var map = new google.maps.Map(document.getElementById("map"), {
+        center: new google.maps.LatLng(45.6145, -106.3418),
+        zoom: 3,
+        mapTypeId: 'roadmap'
+      });
+      var infoWindow = new google.maps.InfoWindow;
+
+      downloadUrl("phpsqlajax_genxml.php", function(data) {
+        var xml = data.responseXML;
+        var markers = xml.documentElement.getElementsByTagName("marker");
+        for (var i = 0; i < markers.length; i++) {
+          var name = markers[i].getAttribute("name");
+          var address = markers[i].getAttribute("address");
+          var content = markers[i].getAttribute("content");
+          var point = new google.maps.LatLng(
+              parseFloat(markers[i].getAttribute("lat")),
+              parseFloat(markers[i].getAttribute("lng")));
+          var html = "<b>" + name + "</b> <br/>" + address + "<br/>" + content;
+          var marker = new google.maps.Marker({
+            map: map,
+            position: point,
+          });
+          bindInfoWindow(marker, map, infoWindow, html);
+        }
+      });
+    }
+
+    function bindInfoWindow(marker, map, infoWindow, html) {
+      google.maps.event.addListener(marker, 'click', function() {
+        infoWindow.setContent(html);
+        infoWindow.open(map, marker);
+      });
+    }
+
+    function downloadUrl(url, callback) {
+      var request = window.ActiveXObject ?
+          new ActiveXObject('Microsoft.XMLHTTP') :
+          new XMLHttpRequest;
+
+      request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+          request.onreadystatechange = doNothing;
+          callback(request, request.status);
+        }
+      };
+
+      request.open('GET', url, true);
+      request.send(null);
+    }
+
+    function doNothing() {}
+
+    //]]>
+
+  </script>
 	</div>
-	<div class="medium-3">
+	<div class="medium-4">
 	</div>
 </div>
 

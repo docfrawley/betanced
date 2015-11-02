@@ -30,4 +30,6 @@ include_once(LIB_PATH.DS.'ceuobject.php');
 include_once(LIB_PATH.DS.'memberadmin.php');
 include_once(LIB_PATH.DS.'boardadmin.php');
 include_once(LIB_PATH.DS.'boardmember.php');
+include_once(LIB_PATH.DS.'mapobjects.php');
+include_once(LIB_PATH.DS.'mobject.php');
 ?>
