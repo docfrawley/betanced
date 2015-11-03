@@ -10,18 +10,18 @@ if (isset($_SESSION['ncedadmin'])) {
             $maps->map_form(true, $_GET['id']);
             break;
         case 'updateM':
-            $maps->update_announce($_POST);
+            $maps->update_map($_POST);
             break;
         case 'deleteM':
-            $maps->delete_announce($_GET['id']);
+            $maps->delete_map($_GET['id']);
             break; 
         case 'addM':
-            $maps->add_announce($_POST);
+            $maps->add_map($_POST);
             break;       
         default:
             break;
     }
-    if ($task != "editA"){
+    if ($task != "editM"){
         $maps->map_form(false);
     }
      

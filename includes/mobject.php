@@ -31,6 +31,14 @@ class map_object {
 		}
 	}
 
+	function get_latlong($address){
+        $prepAddr = str_replace(' ','+',$address);
+        $geocode=file_get_contents('http://maps.google.com/maps/api/geocode/json?address='.$prepAddr.'&sensor=false');
+        $output= json_decode($geocode);
+        $this->lat = $output->results[0]->geometry->location->lat;
+        $this->lng = $output->results[0]->geometry->location->lng;
+	}
+
 	function get_lat() {
 		return $this->lat;
 	}

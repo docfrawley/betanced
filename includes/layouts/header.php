@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="css/app.css" />
     <script src="js/vendor/modernizr.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
-
+    
 </head>
 
 

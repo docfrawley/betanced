@@ -20,16 +20,6 @@ class all_maps {
 		} 
 	}
 
-	function get_latlong($address){
-        $prepAddr = str_replace(' ','+',$address);
-        $geocode=file_get_contents('http://maps.google.com/maps/api/geocode/json?address='.$prepAddr.'&sensor=false');
-        $output= json_decode($geocode);
-        $this->latitude = $output->results[0]->geometry->location->lat;
-        $this->longitude = $output->results[0]->geometry->location->lng;
-
-        echo $this->latitude. " ". $this->longitude;
-	}
-
 	function num_spots(){
 		$this->set_maps();
 		return count($this->an_array);
@@ -67,8 +57,12 @@ class all_maps {
 				<input type="text" name="address" value = "<? echo $address; ?>"/>
 	        </div>
 			<div class="small-12 columns">
-	        	<label>content</label>
+	        	<label>CONTENT</label>
 	        	<textarea name="content"><? echo $content; ?></textarea>
+	        </div>
+	        <div class="small-12 columns">
+	        	<label>DATE</label>
+	        	<input type="text" name="date" value = ""/>
 	        </div>
 	        	<input type="hidden" name="task" value="<? echo $task; ?>"/>
 	        	<? 
@@ -84,83 +78,52 @@ class all_maps {
 	    </div> <?
 	}
 	
-	function delete_announce($numentry){
+	function delete_map($numentry){
 		global $database;
-		$announce = new announceobject($numentry);
-		$priority = $announce->get_priority();
-		$this->set_priorities(0, $priority);
-		$sql = "DELETE FROM announce ";
-	  	$sql .= "WHERE id=". $database->escape_value($numentry);
+		$sql = "DELETE FROM markers ";
+	  	$sql .= "WHERE numid=". $database->escape_value($numentry);
 	  	$sql .= " LIMIT 1";
 	 	$database->query($sql);
-	  	if ($database->affected_rows() == 1) {echo "<br/>Announcement has been deleted.";}
+	  	if ($database->affected_rows() == 1) {echo "<br/>Test has been deleted.";}
 	}
 	
-	function update_announce($info){
+	function update_map($info){
 		global $database;
 		$id = $database->escape_value($info['id']);
-		$priority = $database->escape_value($info['priority']);
-		$announce = new announceobject($id);
-		$prev = $announce->get_priority();
-		if ($announce->get_priority() !=  $priority){
-			$this->set_priorities($priority, $prev); 
-		}
-		$sql = "UPDATE announce SET ";
-		$sql .= "title='". $database->escape_value($info['title']) ."', ";
-		$sql .= "announcement='". nl2br($database->escape_value($info['announcement'])) ."', ";
-		$sql .= "priority='". $priority ."' ";
-		$sql .= "WHERE id='". $id ."'";
+		$site = new map_object($id);
+		$address = $database->escape_value($info['address']);
+		$site->get_latlong($address);
+		$lat = $site->get_lat();
+		$lng = $site->get_lng();
+		$sql = "UPDATE markers SET ";
+		$sql .= "name='". $database->escape_value($info['name']) ."', ";
+		$sql .= "address='". $address ."', ";
+		$sql .= "lat='". $lat ."', ";
+		$sql .= "lng='". $lng ."', ";
+		$sql .= "content='". nl2br($database->escape_value($info['content'])) ."' ";
+		$sql .= "WHERE numid='". $id ."'";
 	  	$database->query($sql);
 	}
-
-	function set_priorities($num, $prev=0){
-		global $database;
-		$this->set_announcements();
-		if ($prev == 0){
-			$prev = $this->num_announce();
-		} elseif ($num == 0 ) {
-			$num = $this->num_announce();
-		}
-		if ($prev < $num){
-			$counter = $prev;
-			for ($x = $prev; $x < $num; $x++){
-				$info = new announceobject($this->an_array[$x]);
-				$sql = "UPDATE announce SET ";
-				$sql .= "priority='". $counter ."' ";
-				$sql .= "WHERE id='". $info->get_id()."'";
-		  		$database->query($sql);
-		  		$counter++;
-			}
-		} else {
-			$counter = $num;
-			for ($x = $num - 1; $x < $prev; $x++){
-				$counter++;
-				$info = new announceobject($this->an_array[$x]);
-				$sql = "UPDATE announce SET ";
-				$sql .= "priority='". $counter ."' ";
-				$sql .= "WHERE id='". $info->get_id()."'";
-		  		$database->query($sql);
-			}
-		}
-		
-	}
 	
-	function add_announce($info){
+	function add_map($info){
 		global $database;
-		$this->set_priorities($database->escape_value($info['priority']));
-		$sql = "INSERT INTO announce (";
-	  	$sql .= "title, announcement, priority";
+		$address = $database->escape_value($info['address']);
+		$site = new map_object();
+		$site->get_latlong($address);
+		$sql = "INSERT INTO markers (";
+	  	$sql .= "name, address, lat, lng, content";
 	  	$sql .= ") VALUES ('";
-	  	$sql .= $database->escape_value($info['title']) ."', '";
-	  	$sql .= nl2br($database->escape_value($info['announcement'])) ."', '";
-		$sql .= $database->escape_value($info['priority']) ."')";
+	  	$sql .= $database->escape_value($info['name']) ."', '";
+	  	$sql .= $database->escape_value($info['address']) ."', '";
+	  	$sql .= $site->get_lat() ."', '";
+	  	$sql .= $site->get_lng()  ."', '";
+	  	$sql .= nl2br($database->escape_value($info['content'])) ."')";
 		$database->query($sql);
 	}
 	
 	function print_maps(){
 		$this->set_maps();
 		foreach ($this->map_array as $ind_spot) {
-			echo $ind_spot;
 			$info = new map_object($ind_spot);
 				?> <tr><td>
 				<a href="?task=editM&id=<? echo $info->get_id(); ?>"><? echo $info->get_name().":  ".$info->get_address(); ?></a></br>
