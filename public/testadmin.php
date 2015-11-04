@@ -8,6 +8,7 @@ if (isset($_SESSION['ncedadmin'])) {
     switch ($task) {
         case 'editM':
             $maps->map_form(true, $_GET['id']);
+
             break;
         case 'updateM':
             $maps->update_map($_POST);

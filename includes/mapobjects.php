@@ -32,10 +32,12 @@ class all_maps {
 			$address = $site->get_address();
 			$name = $site->get_name();
 			$content = $site->get_content();
+			$tdate = $site->get_tdate();
 		} else {
 			$address = "";
 			$name = "";
 			$content = "";
+			$tdate = "";
 		}?>
 		<div class="row">
 			<div class="small-12 text-center columns">
@@ -62,7 +64,7 @@ class all_maps {
 	        </div>
 	        <div class="small-12 columns">
 	        	<label>DATE</label>
-	        	<input type="text" name="date" value = ""/>
+	        	<input type="text" name="tdate" class="span2"  id="dp1" value="<? echo $tdate; ?>">
 	        </div>
 	        	<input type="hidden" name="task" value="<? echo $task; ?>"/>
 	        	<? 
@@ -100,6 +102,7 @@ class all_maps {
 		$sql .= "address='". $address ."', ";
 		$sql .= "lat='". $lat ."', ";
 		$sql .= "lng='". $lng ."', ";
+		$sql .= "tdate='". $database->escape_value($info['tdate']) ."', ";
 		$sql .= "content='". nl2br($database->escape_value($info['content'])) ."' ";
 		$sql .= "WHERE numid='". $id ."'";
 	  	$database->query($sql);
@@ -111,12 +114,13 @@ class all_maps {
 		$site = new map_object();
 		$site->get_latlong($address);
 		$sql = "INSERT INTO markers (";
-	  	$sql .= "name, address, lat, lng, content";
+	  	$sql .= "name, address, lat, lng, tdate, content";
 	  	$sql .= ") VALUES ('";
 	  	$sql .= $database->escape_value($info['name']) ."', '";
 	  	$sql .= $database->escape_value($info['address']) ."', '";
 	  	$sql .= $site->get_lat() ."', '";
 	  	$sql .= $site->get_lng()  ."', '";
+	  	$sql .= $database->escape_value($info['tdate'])  ."', '";
 	  	$sql .= nl2br($database->escape_value($info['content'])) ."')";
 		$database->query($sql);
 	}
@@ -127,7 +131,9 @@ class all_maps {
 			$info = new map_object($ind_spot);
 				?> <tr><td>
 				<a href="?task=editM&id=<? echo $info->get_id(); ?>"><? echo $info->get_name().":  ".$info->get_address(); ?></a></br>
-				<? echo nl2br($info->get_content()); ?>
+				<? echo nl2br($info->get_content()); 
+					echo "<br/>Date: ".$info->get_tdate();
+				?>
 				</td><td><a href="?task=deleteM&id=<? echo $info->get_id(); ?>" class="button tiny radius">DELETE</a>
 				</td></tr><?
 			

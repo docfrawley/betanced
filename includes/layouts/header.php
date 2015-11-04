@@ -4,9 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>NCED Online</title>
     <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/foundation-datepicker.min.css">
     <script src="js/vendor/modernizr.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
-    
 </head>
 
 
@@ -26,7 +26,7 @@
                 
                 <li><a href="#">About</a>
                  <ul>
-                 		<li><a href="#">One</a></li>
+                    <li><a href="#">One</a></li>
                     <li><a href="#">Two</a></li>
                     <li><a href="board.php">BOARD OF DIRECTORS</a></li>
                     <li><a href="#">Four</a></li>
@@ -80,14 +80,14 @@
       </ul>
       <section class="top-bar-section">
         <ul class="right">
-	          <li class="has-dropdown"><a href="#">ABOUT</a>
-  	           <ul class="dropdown">
-  	             <li><a href="#">ONE</a></li>
-  	             <li><a href="#">TWO</a></li>
+            <li class="has-dropdown"><a href="#">ABOUT</a>
+               <ul class="dropdown">
+                 <li><a href="#">ONE</a></li>
+                 <li><a href="#">TWO</a></li>
                  <li><a href="board.php">BOARD OF DIRECTORS</a></li>
                  <li><a href="#">FOUR</a></li>
-  	           </ul>
-	          </li>
+               </ul>
+            </li>
           <li class="has-dropdown"><a href="#">BE AN NCED</a>
                  <ul class="dropdown">
                     <li><a href="#">ONE</a></li>
@@ -122,5 +122,5 @@
           } ?>
         </ul>
       </section>
-    </nav>	
+    </nav>  
     </div>
