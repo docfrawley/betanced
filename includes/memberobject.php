@@ -2,26 +2,24 @@
 
 class memobject {
 	
-	private $username;
-	private $password;
 	private $lname;
 	private $fname;
 	private $memstart;
 	private $ryear;
 	private $memstatus;
+	private $ncednum;
 	
 	function __construct($ncednum) {
 		global $database;
-		$sql="SELECT * FROM renewal WHERE ncednum ='".$ncednum."'";
+		$this->ncednum = $database->escape_value($ncednum);
+		$sql="SELECT * FROM renewal WHERE ncednum ='".$this->ncednum."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
-		$this->username = $value['username'];
-		$this->password = $value['password'];
 		$this->lname = $value['lname'];
 		$this->fname = $value['fname'];
 		$this->ryear = $value['renewyear'];
 		$this->memstatus = $value['status'];
-		$sql="SELECT * FROM memstart WHERE ncednum ='".$ncednum."'";
+		$sql="SELECT * FROM memstart WHERE ncednum ='".$this->ncednum."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		$this->memstart = $value['whenst'];
@@ -78,57 +76,26 @@ class memobject {
 		</table><?
 	}
 
-	function profile_update($info) {
+	function payment_history(){
 		global $database;
-		if (isset($info['firstp'])) {
-			if ($info['secondp']==""){
-				$_SESSION['tryagainc'] = "You need to reconfirm your password.";
-			} elseif ($info['firstp'] != $info['secondp']) {
-				$_SESSION['tryagainc'] = "Your passwords did not match.";
-			} else {
-				$_SESSION['tryagainc'] = "";
-			}
-
+		$sql="SELECT * FROM rmoney WHERE ncednum ='".$this->ncednum."' ORDER BY rdate";
+		$result_set = $database->query($sql);
+		?> 
+		<h4>Payment History</h4>
+		<table> 
+			<tr><td>Amount</td><td>Method</td><td>Date Entered</td></tr><?
+		while ($info = $database->fetch_array($result_set)) {
+			?> <tr><td><?
+			echo "$". number_format($info['amount'], 2, '.', '');
+			?></td><td><?
+			echo $info['manner'];
+			?></td><td><?
+			echo $info['rdate'];
+			?></td></tr><?
 		}
-		if ($_SESSION['tryagainc'] == "") {
-			$sql = "UPDATE renewal SET ";
-			$sql .= "username='". $database->escape_value($info['uname']) ."', ";
-			$sql .= "password='". $database->escape_value($info['firstp']) ."' ";
-			$sql .= "WHERE ncednum='". $_SESSION['ncednumber'] ."'";
-			$database->query($sql);
-			$_SESSION['tryagainc'] = "username and/or password has been updated.<br/>";
-			$this->username = $database->escape_value($info['uname']);
-			$this->password = $database->escape_value($info['firstp']);
-		}
+		?> </table> <?
 	}
 	
-	function login_form() {?> 
-		<div class="row">
-			<div class="small-12 columns">
-				<p>You can change your username and/or password below</p>
-	        </div>
-	        <form action="memberin.php" method="post">
-	        <div class="small-12 columns">
-				<label>USERNAME</label>
-				<input type="text" name="uname" value = "<? echo $this->username; ?>"/>
-			</div>
-			<div class="small-12 columns">
-	        	<label>NEW PASSWORD:</label>
-	        	<input type="password" name="firstp" value = "<? echo $this->password; ?>"/>
-	        </div>
-			<div class="small-12 columns">
-	        	<label>CONFIRM PASSWORD</label>
-	        	<input type="password" name="secondp"/>
-	        </div>
-			<div class="small-12 columns">
-				<input type="submit" value="submit" class="button small"/>
-			</div>
-	        </form>
-	    </div>
-		<?
-		$_SESSION['tryagainc'] = " ";
-	}
-
 	function get_multiple(){
 		$the_year = date('Y', strtotime($this->memstart));
 		$diffyear = date('Y') - $the_year;
@@ -147,11 +114,52 @@ class memobject {
 		return strtotime('+5 years', $this->set_archivedate());
 	}
 
+	function update_renew($value){
+		global $database;
+		$this->ryear = $database->escape_value($value['ryear']);
+		$this->memstatus = $database->escape_value($value['rstatus']);
+		$sql = "UPDATE renewal SET ";
+		$sql .= "status='". $this->memstatus ."', ";
+		$sql .= "renewyear='". $this->ryear ."'";
+		$sql .= " WHERE ncednum='". $this->ncednum ."'";
+	  	$database->query($sql);
+
+	  	$today = new DateTime;
+	  	$amount = $database->escape_value($value['amount']);
+	  	if ($amount[0] == "$"){
+	  		$amount = substr($amount, 1);
+	  	}
+	  	$sql = "INSERT INTO rmoney (";
+		$sql .= "ncednum, amount, rdate, manner";
+ 		$sql .= ") VALUES ('";
+ 		$sql .= $this->ncednum ."', '";
+ 		$sql .= $amount ."', '";
+		$sql .= $today->format('F j, Y') ."', '";
+		$sql .= $database->escape_value($value['manner']) ."')";
+		$database->query($sql);
+
+	  	if ($value['email']=='yes'){
+	  		$sql="SELECT * FROM nceddata WHERE ncednum ='".$this->ncednum."'";
+			$result_set = $database->query($sql);
+			$info = $database->fetch_array($result_set);
+			$to = $info['email'];
+			$subject = "NCED Renewal Confirmation";
+			$message = 'Dear '.$this->get_displayname().','."\r\n"."\r\n";
+			$message .= "Congratulations. You are renewed through {$this->ryear}."."\r\n"."\r\n";
+			$message .= 'Thank you for maintaining your NCED membership.'."\r\n"."\r\n";
+			$message .= 'If you have any questions about your membership, please feel free to reply to this email.'."\r\n"."\r\n";
+			$message .= 'Sincerely,'."\r\n"."\r\n";
+			$message .= 'The NCED Board';
+			$headers = "From: membership@ncedonline.org"."\r\n"."Reply-To: membership@ncedonline.org"."\r\n"."X-mailer:PHP/".phpversion();
+			mail ($to, $subject, $message, $headers);
+	  	}
+	}
+
 	function admin_renew(){
 		?> 
 		 <form action="ncedadmin.php" method="POST">
 		 	<fieldset>
-		 			<legend>Change Membership Status</legend>
+		 		<legend>Change Membership Status</legend>
 		 		<div class="row">
 			 		<div class="small-12 columns">
 			 			<label>Renewal Status</label>
@@ -160,12 +168,10 @@ class memobject {
 				        		<option value="RENEWED"/> RENEWED </option>
 				        		<option value="REVOKED"/> REVOKED</option>
 						 	</select>
-			 		</div>
-			 	</div>
-			 	<div class="row">	
+			 		</div>	
 			 		<div class="small-12 columns">
 			 			<label>Renewal Year</label>
-			 				<select name="rstatus">
+			 				<select name="ryear">
 			 					<option selected="selected" value="<? echo $this->ryear; ?>"/> <? echo $this->ryear; ?> </option>
 						 		<? 
 			 					for ($x=0; $x<6; $x++){
@@ -174,13 +180,28 @@ class memobject {
 			 					?>
 			 			 	</select>
 			 		</div>
-		 		</div>
-			<div class="row">
-		 		<div class="small-12 columns">
-        			<input type="submit" value="Submit" class="button tiny radius"/>
+			 		<div class="row">
+				 		<div class="small-6 columns">
+				 			<label>Payment Amount</label>
+				 			<input type="text" name="amount" placeholder="Eg. 35.00"/>	
+				 		</div>	
+				 		<div class="small-6 columns">
+				 			<label>Payment Method</label>
+				 				<select name="manner">
+					        		<option value="paypal"/> PAYPAL </option>
+					        		<option value="check"/> CHECK</option>
+							 	</select>
+				 		</div>	
+				 	</div>
+			 		<input type="hidden" name="ncednumber" value="<? echo $this->ncednum; ?>"/>
+				 	<div class="small-12 columns">
+	        			<input type="checkbox" name="email" value="yes"> <label>Send email about renewal status change?</label>
+	        		</div>	
+			 		<div class="small-12 columns">
+	        			<input type="submit" value="Submit" class="button tiny radius"/>
+	        		</div>
         		</div>
-        	</div>
-        </fieldset>
+        	</fieldset>
         </form><?
 	}
 }

@@ -9,10 +9,17 @@ if (isset($_SESSION['ncedadmin'])) {
     }
 
     if (isset($_POST['ncednumber']) || isset($_POST['LastName']) || isset($_GET['ncednumberL'])){ 
-        $ncednumber=isset($_GET['ncednumberL']) ? $_GET['ncednumberL'] : $member_admin->get_memberN($_POST, 'ncedadmin');
-        $member = new memobject($ncednumber);
+        if (isset($_POST['ryear'])){
+            $ncednumber = $_POST['ncednumber'];
+            $member = new memobject($ncednumber);
+            $member->update_renew($_POST);
+        } else {
+            $ncednumber=isset($_GET['ncednumberL']) ? $_GET['ncednumberL'] : $member_admin->get_memberN($_POST, 'ncedadmin');
+            $member = new memobject($ncednumber);
+        }
         $meminfo = new infobject($ncednumber);
-        $ceuinfo = new ceuinfo($ncednumber, $member->set_archivedate());?>
+        $ceuinfo = new ceuinfo($ncednumber, $member->set_archivedate());
+        ?>
         <div class = "row">  
             <div class = "medium-9 columns">
                  <? $member->display_member(); ?>
@@ -26,7 +33,14 @@ if (isset($_SESSION['ncedadmin'])) {
                 <? $ceuinfo->snapshot(false); ?>
             </div>
             <div class="small-5 columns">
-                <? $member->admin_renew(); ?>
+                <div class="row">
+                    <div class"small-12 columns">
+                        <? $member->admin_renew(); ?>
+                    </div>
+                    <div class"small-12 columns">
+                        <? $member->payment_history(); ?>
+                    </div>
+                </div>
             </div>
         </div><?
     } else { ?>

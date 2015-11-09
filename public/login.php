@@ -19,10 +19,10 @@ if ($_SESSION['tryagain'] == "create user") {
     </div>
 
     <div class="row">
-        <div class="medium-6 columns">
+        <div class="small-10 medium-7 large-6 columns small-centered">
             <div class="row">
                 <div class="small-12 columns">
-                    <p>Sign in here if you haven't created a user account yet.</p>
+                    <p>Please enter your last name and four digit NCED number.</p>
                 </div>
                 <form  action="logincheck.php" method="POST">
                 <div class="small-12 columns">
@@ -40,26 +40,7 @@ if ($_SESSION['tryagain'] == "create user") {
             </div>
         </div>
 
-        <div class="medium-6 columns">
-            <div class="row">
-                <div class="small-12 columns">
-                    <p>Sign in here if you have already created an user account.</p>
-                </div>
-                <form  action="logincheck.php" method="POST">
-                <div class="small-12 columns">
-                    <label>USERNAME</label>
-                    <input type="text" name="username" placeholder="Username"/>
-                </div>
-                <div class="small-12 columns">
-                    <label>PASSWORD</label>
-                    <input type="password" name="password" placeholder="Password"/>
-                </div>
-                <div class="small-12 columns">
-                    <input type="submit" value="Submit" class="button small"/>  
-                </div>  
-               </form> 
-            </div>
-        </div>
+        
     </div>
     <? 
 }
