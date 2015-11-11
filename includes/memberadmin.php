@@ -29,10 +29,15 @@ class memadmin {
 	function get_numberOf($status){
 		$numberOf = 0;
 		for ($counter=1; $counter<= count($this->allmem); $counter++) {
-			if (($status == 'RENEWED') && $this->allmem[$counter]['renewyear'] > (date('Y') -1)) {$numberOf++;}
-			elseif ($status == "NOT RENEWED" && 
+			if (($status == 'RENEWED') && $this->allmem[$counter]['renewyear'] > (date('Y') -1)) {
+				$numberOf++;
+			} elseif (($status == 'RENEWEDP') && $this->allmem[$counter]['renewyear'] > (date('Y'))) {
+				$numberOf++;
+			} elseif ($status == "NOT RENEWED" && 
 				($this->allmem[$counter]['renewyear'] < date('Y')) && 
-					($this->allmem[$counter]['status'] != 'REVOKED')) {$numberOf++;}
+					($this->allmem[$counter]['status'] != 'REVOKED')) {
+				$numberOf++;
+			}
 			else {
 				if (($this->allmem[$counter]['status'] == 'REVOKED') && ($status == 'REVOKED')) {$numberOf++;}
 			}
@@ -97,12 +102,39 @@ class memadmin {
 		 		</div>
 		 	</div>
 			<div class="row">
-		 		<div class="small-12 columns">
+		 		<div class="small-6 columns">
         			<input type="submit" value="Submit" class="button tiny radius"/>
+        		</div>
+        		<div class="small-6 columns right">
+        			<? if ($this->renewopen) { ?>
+        				<a href="?task=pending" class="button tiny radius">LIST OF PENDING RENEWALS</a>
+        			<? } ?>
         		</div>
         	</div>
         </fieldset>
         </form><?
+	}
+
+	function pending_list(){
+		?> <h4>Click on NCED Number to see member information and update his/her membership status</h4>
+		<table>
+		<tr><td>NCED #</td><td>NAME</td><td>RENEWAL STATUS</td><td>LAST RENEWED YEAR</td></tr><?
+		foreach ($this->allmem as $value) {
+			if ($value['pending']=='yes'){
+				$ncednumber=$value['ncednum'];
+				$person = new memobject($ncednumber);
+				?> <tr><td> 
+					<a href="?ncednumberL=<? echo $ncednumber;  ?>"> <? echo $ncednumber; ?> </a>
+				</td><td> <?
+					echo $person->get_displayname();
+				?> </td><td> <?
+					echo $value['status'];
+				?> </td><td> <?
+					echo $value['renewyear'];
+				?> </td></tr> <?			
+			}
+		}
+		?> </table> <?
 	}
 
 	function update_renew($info) {

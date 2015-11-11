@@ -7,12 +7,12 @@ $member = new memobject($_SESSION['ncednumber']);
 $meminfo = new infobject($_SESSION['ncednumber']);
 $ceuinfo = new ceuinfo($_SESSION['ncednumber'], $member->set_archivedate());
 ?> <div class = "row"> <?
-    ?> <div class = "medium-6 columns"> 
+    ?> <div class = "small-12 columns"> 
             <div class="row">
-                <div class="small-12 columns">
+                <div class="small-6 columns">
                     <? $member->display_member(); ?>
                 </div>
-                <div class="small-12 columns">
+                <div class="small-6 columns">
                     <? $ceuinfo->snapshot(); ?>
                 </div>
             </div>
@@ -22,7 +22,6 @@ $ceuinfo = new ceuinfo($_SESSION['ncednumber'], $member->set_archivedate());
             $member->profile_update($_POST); 
         echo $_SESSION['tryagainc'].'<br/>';
     }
-        $member->login_form();
     ?> </div> <?
 ?> </div> 
     <div class = "row"> <?
@@ -32,13 +31,6 @@ $ceuinfo = new ceuinfo($_SESSION['ncednumber'], $member->set_archivedate());
             echo $_SESSION['tryagainc'].'<br/>';
         }
         echo $meminfo->info_form();
-    ?> </div> <?
-    ?> <div class = "medium-6 columns"> <?
-        if (isset($_POST['uname'])) {
-            $member->profile_update($_POST); 
-        echo $_SESSION['tryagainc'].'<br/>';
-    }
-        $member->login_form();
     ?> </div> <?
 ?> </div> <?
 }

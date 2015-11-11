@@ -55,33 +55,44 @@ if (isset($_SESSION['ncedadmin'])) {
                             </div> <?
                         } else {
                     ?>
-                            <div class = "medium-4 columns"> <h3><?
-                                echo "# Renewed: <strong>{$member_admin->get_numberOf('RENEWED')}</strong>"; ?></h3>
+                            <div class = "medium-3 columns"> <h5><?
+                            $year = new DateTime('NOW');
+                                echo "# Renewed ".$year->format('Y').": <strong>{$member_admin->get_numberOf('RENEWED')}</strong>"; ?></h5>
                             </div>
-                            <div class = "medium-4 columns"> <h3><?
-                                echo "# Non-Renewed: <strong>{$member_admin->get_numberOf('NOT RENEWED')}</strong>"; ?></h3>
+                            <div class = "medium-3 columns"> <h5><?
+                            $year = $year->add(new DateInterval('P1Y'));
+                                echo "# Renewed ".$year->format('Y').": <strong>{$member_admin->get_numberOf('RENEWEDP')}</strong>"; ?></h5>
                             </div>
-                            <div class = "medium-4 columns"> <h3><?
-                                echo "# Revoked: <strong>{$member_admin->get_numberOf('REVOKED')}</strong>"; ?></h3>
+                            <div class = "medium-3 columns"> <h5><?
+                                echo "# Non-Renewed: <strong>{$member_admin->get_numberOf('NOT RENEWED')}</strong>"; ?></h5>
+                            </div>
+                            <div class = "medium-3 columns"> <h5><?
+                                echo "# Revoked: <strong>{$member_admin->get_numberOf('REVOKED')}</strong>"; ?></h5>
                             </div> <?
                         } ?>
 
             </div> 
         </div> 
-        <div class = "row">
-            <div class = "medium-6 columns"> <?
-                $member_admin->search_member_form("ncedadmin"); ?>
-            </div>
-            <div class = "medium-6 columns"> <?
-                if (isset($_POST['renewal'])) { $member_admin->update_renew($_POST); }
-                    $member_admin->set_renew(); ?>
-            </div>
-        </div> 
-        <div class = "row">
+        <? if (isset($_GET['task'])) { ?>
             <div class = "medium-12 columns"> <?
-                $member_admin->new_member_form(); ?>
+                    $member_admin->pending_list(); ?>
+            </div> <?
+			} else {  ?>
+            <div class = "row">
+                <div class = "medium-6 columns"> <?
+                    $member_admin->search_member_form("ncedadmin"); ?>
+                </div>
+                <div class = "medium-6 columns"> <?
+                    if (isset($_POST['renewal'])) { $member_admin->update_renew($_POST); }
+                        $member_admin->set_renew(); ?>
+                </div>
             </div> 
-        </div> <?
+            <div class = "row">
+                <div class = "medium-12 columns"> <?
+                    $member_admin->new_member_form(); ?>
+                </div> 
+            </div> <?
+        }
     }
 }
 

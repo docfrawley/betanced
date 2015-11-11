@@ -23,6 +23,7 @@ class infobject {
 		$this->lname = $value['lname'];
 		$this->fname = $value['fname'];
 		$this->preferred = $value['preferred'];
+		$this->email = $value['email'];
 		$this->street = $value['street'];
 		$this->city = $value['city'];
 		$this->state = $value['state'];
@@ -56,6 +57,7 @@ class infobject {
 		$sql .= "lname='". $database->escape_value($info['lname']) ."', ";
 		$sql .= "fname='". $database->escape_value($info['fname']) ."', ";
 		$sql .= "preferred='". $database->escape_value($info['preferred']) ."', ";
+		$sql .= "email='". $database->escape_value($info['email']) ."', ";
 		$sql .= "street='". $database->escape_value($info['street']) ."', ";
 		$sql .= "city='". $database->escape_value($info['city']) ."', ";
 		$sql .= "state='". $database->escape_value($info['state']) ."', ";
@@ -127,6 +129,12 @@ class infobject {
 	        <div class="small-6 columns">
 	        	<label>Zip Code</label>
 	        	<input type="text" name="zip" value = "<? echo $this->zip; ?>"/>
+	        </div>
+	    </div>
+	    <div class="row">
+	    	<div class="small-12 columns">
+	        	<label>Email</label>
+	        	<input type="text" name="email" value = "<? echo $this->email; ?>"/>
 	        </div>
 	    </div>
 	    <div class="row">
