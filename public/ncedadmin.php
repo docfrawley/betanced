@@ -68,12 +68,12 @@ if (isset($_SESSION['ncedadmin'])) {
                         } else {
                     ?>
                             <div class = "medium-3 columns"> <h5><?
-                            $year = new DateTime('NOW');
-                                echo "# Renewed ".$year->format('Y').": <strong>{$member_admin->get_numberOf('RENEWED')}</strong>"; ?></h5>
+                            $renewyear = $member_admin->get_year();
+                            $prevyear = $renewyear-1;
+                                echo "# Renewed ".$prevyear.": <strong>{$member_admin->get_numberOf('RENEWEDP')}</strong>"; ?></h5>
                             </div>
                             <div class = "medium-3 columns"> <h5><?
-                            $year = $year->add(new DateInterval('P1Y'));
-                                echo "# Renewed ".$year->format('Y').": <strong>{$member_admin->get_numberOf('RENEWEDP')}</strong>"; ?></h5>
+                                echo "# Renewed ".$renewyear.": <strong>{$member_admin->get_numberOf('RENEWED')}</strong>"; ?></h5>
                             </div>
                             <div class = "medium-3 columns"> <h5><?
                                 echo "# Non-Renewed: <strong>{$member_admin->get_numberOf('NOT RENEWED')}</strong>"; ?></h5>

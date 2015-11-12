@@ -117,40 +117,56 @@ class memobject {
 	function update_renew($value){
 		global $database;
 		$this->ryear = $database->escape_value($value['ryear']);
-		$this->memstatus = $database->escape_value($value['rstatus']);
+		$status = $database->escape_value($value['rstatus']);
+		if ($status == 'NONPEND'){
+			$updateStatus = $this->memstatus;
+		} else {
+			$updateStatus = $status;
+			$this->memstatus = $status;
+		}
 		$sql = "UPDATE renewal SET ";
-		$sql .= "status='". $this->memstatus ."', ";
+		$sql .= "status='". $updateStatus ."', ";
 		$sql .= "pending='', ";
 		$sql .= "renewyear='". $this->ryear ."'";
 		$sql .= " WHERE ncednum='". $this->ncednum ."'";
 	  	$database->query($sql);
-
-	  	$today = new DateTime;
-	  	$amount = $database->escape_value($value['amount']);
-	  	if ($amount[0] == "$"){
-	  		$amount = substr($amount, 1);
-	  	}
-	  	$sql = "INSERT INTO rmoney (";
-		$sql .= "ncednum, amount, rdate, manner";
- 		$sql .= ") VALUES ('";
- 		$sql .= $this->ncednum ."', '";
- 		$sql .= $amount ."', '";
-		$sql .= $today->format('F j, Y') ."', '";
-		$sql .= $database->escape_value($value['manner']) ."')";
-		$database->query($sql);
-
+	  	if ($status != 'NONPEND'){
+		  	$today = new DateTime;
+		  	$amount = $database->escape_value($value['amount']);
+		  	if ($amount[0] == "$"){
+		  		$amount = substr($amount, 1);
+		  	}
+		  	$sql = "INSERT INTO rmoney (";
+			$sql .= "ncednum, amount, rdate, manner";
+	 		$sql .= ") VALUES ('";
+	 		$sql .= $this->ncednum ."', '";
+	 		$sql .= $amount ."', '";
+			$sql .= $today->format('F j, Y') ."', '";
+			$sql .= $database->escape_value($value['manner']) ."')";
+			$database->query($sql);
+		}
 	  	if ($value['email']=='yes'){
 	  		$sql="SELECT * FROM nceddata WHERE ncednum ='".$this->ncednum."'";
 			$result_set = $database->query($sql);
 			$info = $database->fetch_array($result_set);
 			$to = $info['email'];
-			$subject = "NCED Renewal Confirmation";
-			$message = 'Dear '.$this->get_displayname().','."\r\n"."\r\n";
-			$message .= "Congratulations. You are renewed through {$this->ryear}."."\r\n"."\r\n";
-			$message .= 'Thank you for maintaining your NCED membership.'."\r\n"."\r\n";
-			$message .= 'If you have any questions about your membership, please feel free to reply to this email.'."\r\n"."\r\n";
-			$message .= 'Sincerely,'."\r\n"."\r\n";
-			$message .= 'The NCED Board';
+			if ($status != 'NONPEND'){
+				$subject = "NCED Renewal Confirmation";
+				$message = 'Dear '.$this->get_displayname().','."\r\n"."\r\n";
+				$message .= "Congratulations. You are renewed through {$this->ryear}."."\r\n"."\r\n";
+				$message .= 'Thank you for maintaining your NCED membership.'."\r\n"."\r\n";
+				$message .= 'If you have any questions about your membership, please feel free to reply to this email.'."\r\n"."\r\n";
+				$message .= 'Sincerely,'."\r\n"."\r\n";
+				$message .= 'The NCED Board';
+			} else {
+				$subject = "NCED Renewal Form";
+				$message = 'Dear '.$this->get_displayname().','."\r\n"."\r\n";
+				$message .= "We have reset your online renewal form so that you can now begin again the renewal online process."."\r\n"."\r\n";
+				$message .= 'Thank you for maintaining your NCED membership.'."\r\n"."\r\n";
+				$message .= 'If you have any questions about your membership, please feel free to reply to this email.'."\r\n"."\r\n";
+				$message .= 'Sincerely,'."\r\n"."\r\n";
+				$message .= 'The NCED Board';
+			} 
 			$headers = "From: membership@ncedonline.org"."\r\n"."Reply-To: membership@ncedonline.org"."\r\n"."X-mailer:PHP/".phpversion();
 			mail ($to, $subject, $message, $headers);
 	  	}
@@ -175,6 +191,7 @@ class memobject {
 			 					<option selected="selected" value="<? echo $this->memstatus; ?>"/> <? echo $this->memstatus; ?> </option>
 				        		<option value="RENEWED"/> RENEWED </option>
 				        		<option value="REVOKED"/> REVOKED</option>
+				        		<option value="NONPEND"/> NON-PENDING </option>
 						 	</select>
 			 		</div>	
 			 		<div class="small-12 columns">

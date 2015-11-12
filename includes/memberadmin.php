@@ -22,6 +22,10 @@ class memadmin {
 		$this->renewyear = $value['theyear'];
 	}
 
+	function get_year(){
+		return $this->renewyear;
+	}
+
 	function get_highnum(){
 		return count($this->allmem);
 	}
@@ -29,9 +33,9 @@ class memadmin {
 	function get_numberOf($status){
 		$numberOf = 0;
 		for ($counter=1; $counter<= count($this->allmem); $counter++) {
-			if (($status == 'RENEWED') && $this->allmem[$counter]['renewyear'] > (date('Y') -1)) {
+			if (($status == 'RENEWEDP') && $this->allmem[$counter]['renewyear'] == ($this->renewyear -1)) {
 				$numberOf++;
-			} elseif (($status == 'RENEWEDP') && $this->allmem[$counter]['renewyear'] > (date('Y'))) {
+			} elseif (($status == 'RENEWED') && $this->allmem[$counter]['renewyear'] >= $this->renewyear) {
 				$numberOf++;
 			} elseif ($status == "NOT RENEWED" && 
 				($this->allmem[$counter]['renewyear'] < date('Y')) && 
