@@ -14,6 +14,7 @@ class infobject {
 	private $hphone;
 	private $cphone;
 	private $prefphone;
+	private $ncednum;
 	
 	function __construct($ncednum) {
 		global $database;
@@ -31,7 +32,8 @@ class infobject {
 		$this->wphone = $value['wphone'];
 		$this->hphone = $value['hphone'];
 		$this->cphone = $value['cphone'];
-		$this->prefphone = $value['prefphone'];		
+		$this->prefphone = $value['prefphone'];	
+		$this->ncednum = $ncednum;	
 	}
 	
 	
@@ -44,7 +46,7 @@ class infobject {
 	}
 
 	function get_email() {
-		return $this->infoarray['email'];
+		return $this->email;
 	}
 
 	function has_displayname() {
@@ -66,15 +68,16 @@ class infobject {
 		$sql .= "hphone='". $database->escape_value($info['hphone']) ."', ";
 		$sql .= "cphone='". $database->escape_value($info['cphone']) ."', ";
 		$sql .= "prefphone='". $database->escape_value($info['prefphone']) ."' ";
-		$sql .= "WHERE ncednum='". $_SESSION['ncednumber'] ."'";
+		$sql .= "WHERE ncednum='". $this->ncednum  ."'";
 		$database->query($sql);		
 		$_SESSION['tryagainc'] = "Your contact information has been updated.";
-		$sql="SELECT * FROM nceddata WHERE ncednum ='".$_SESSION['ncednumber']."'";
+		$sql="SELECT * FROM nceddata WHERE ncednum ='".$this->ncednum ."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		$this->lname = $value['lname'];
 		$this->fname = $value['fname'];
 		$this->preferred = $value['preferred'];
+		$this->email = $value['email'];
 		$this->street = $value['street'];
 		$this->city = $value['city'];
 		$this->state = $value['state'];
@@ -85,13 +88,17 @@ class infobject {
 		$this->prefphone = $value['prefphone'];	
 	}
 	
-	function info_form() {?> 
+	function info_form($admin=false, $where = 'memberin.php') {?> 
 		<div class="row">
 			<div class="small-12 columns">
+				<? if ($admin){
+					?><h4> Below is the contact information for <?echo $this->full_name(); ?></h4><?
+				} else { ?>
 				<p>Below is the contact information we have on file for you. We will use this information to contact you so please keep this information updated. Thank you.</p>
+				<? } ?>
 	        </div>
 	    </div>
-	    <form action="memberin.php" method="post">
+	    <form action="<? echo $where; ?>" method="post">
 	    <div class="row">
 	        <div class="small-6 columns">
 				<label>First Name</label>
@@ -163,6 +170,7 @@ class infobject {
 	        </div>
 	    </div>
 	    <input type="hidden" name="editinfo" value="editinfo"/> 
+	    <input type="hidden" name="ncednumber" value="<? echo $this->ncednum; ?>"/> 
 	    <div class="row">
 			<div class="small-12 columns">
 				<input type="submit" value="submit" class="button small"/>

@@ -120,6 +120,7 @@ class memobject {
 		$this->memstatus = $database->escape_value($value['rstatus']);
 		$sql = "UPDATE renewal SET ";
 		$sql .= "status='". $this->memstatus ."', ";
+		$sql .= "pending='', ";
 		$sql .= "renewyear='". $this->ryear ."'";
 		$sql .= " WHERE ncednum='". $this->ncednum ."'";
 	  	$database->query($sql);
@@ -161,6 +162,13 @@ class memobject {
 		 	<fieldset>
 		 		<legend>Change Membership Status</legend>
 		 		<div class="row">
+		 			<? $meminfo = new infobject($this->ncednum); 
+		 			if ($meminfo->get_email()=="") { ?>
+			 			<div class="small-12 columns">
+			 				<p>We do not have an email for this member. You will have to enter an email address in the contact information form to the left and submit before completing this form if you want to send an automatic email when updating this member's membership status.</p>
+			 			</div> <?
+				 	} ?>
+
 			 		<div class="small-12 columns">
 			 			<label>Renewal Status</label>
 			 				<select name="rstatus">
@@ -195,7 +203,10 @@ class memobject {
 				 	</div>
 			 		<input type="hidden" name="ncednumber" value="<? echo $this->ncednum; ?>"/>
 				 	<div class="small-12 columns">
-	        			<input type="checkbox" name="email" value="yes"> <label>Send email about renewal status change?</label>
+				 		<? 	if ($meminfo->get_email() != "") { ?>
+	        					<input type="checkbox" name="email" value="yes"> <label>Send email about renewal status change?</label> <?
+				 			} ?>
+				 		
 	        		</div>	
 			 		<div class="small-12 columns">
 	        			<input type="submit" value="Submit" class="button tiny radius"/>

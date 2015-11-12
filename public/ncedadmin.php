@@ -9,15 +9,20 @@ if (isset($_SESSION['ncedadmin'])) {
     }
 
     if (isset($_POST['ncednumber']) || isset($_POST['LastName']) || isset($_GET['ncednumberL'])){ 
-        if (isset($_POST['ryear'])){
+        if ((isset($_POST['ryear'])) || (isset($_POST['editinfo']))){
             $ncednumber = $_POST['ncednumber'];
             $member = new memobject($ncednumber);
-            $member->update_renew($_POST);
+            if (isset($_POST['ryear'])){
+                $member->update_renew($_POST);
+            }
         } else {
             $ncednumber=isset($_GET['ncednumberL']) ? $_GET['ncednumberL'] : $member_admin->get_memberN($_POST, 'ncedadmin');
             $member = new memobject($ncednumber);
         }
         $meminfo = new infobject($ncednumber);
+        if (isset($_POST['editinfo'])){
+            $meminfo->info_update($_POST); 
+        }
         $ceuinfo = new ceuinfo($ncednumber, $member->set_archivedate());
         ?>
         <div class = "row">  
@@ -30,7 +35,14 @@ if (isset($_SESSION['ncedadmin'])) {
         </div>  
         <div class = "row"> 
             <div class="small-7 columns">
-                <? $ceuinfo->snapshot(false); ?>
+                <div class = "row"> 
+                    <div class="small-12 columns">
+                        <? $ceuinfo->snapshot(false); ?>
+                    </div>
+                     <div class="small-12 columns">
+                        <? $meminfo->info_form(true, 'ncedadmin.php'); ?>
+                    </div>
+                </div>
             </div>
             <div class="small-5 columns">
                 <div class="row">
