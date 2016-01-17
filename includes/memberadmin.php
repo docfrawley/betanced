@@ -29,26 +29,92 @@ class memadmin {
 	function get_highnum(){
 		return count($this->allmem);
 	}
-	
-	function get_numberOf($status){
-		$numberOf = 0;
+
+	function printMemberCounts(){
+		$prevYr = 0;
+		$currYr = 0;
+		$currYrOnly =0;
+		$currYrThree = 0;
+		$nextYr = 0;
+		$twoYr = 0;
+		$revoked = 0;
+		$threeAgo = 0;
+		$twoAgo = 0;
 		for ($counter=1; $counter<= count($this->allmem); $counter++) {
-			if (($status == 'RENEWEDP') && $this->allmem[$counter]['renewyear'] == ($this->renewyear -1)) {
-				$numberOf++;
-			} elseif (($status == 'RENEWED') && $this->allmem[$counter]['renewyear'] >= $this->renewyear) {
-				$numberOf++;
-			} elseif ($status == "NOT RENEWED" && 
-				($this->allmem[$counter]['renewyear'] < date('Y')) && 
-					($this->allmem[$counter]['status'] != 'REVOKED')) {
-				$numberOf++;
-			}
-			else {
-				if (($this->allmem[$counter]['status'] == 'REVOKED') && ($status == 'REVOKED')) {$numberOf++;}
+			if ($this->allmem[$counter]['status'] == 'REVOKED') {
+				$revoked++;
+			} elseif ($this->allmem[$counter]['renewyear'] < $this->renewyear) {
+				if ($this->allmem[$counter]['renewyear'] == ($this->renewyear -1)) {
+					$prevYr++;
+				} elseif ($this->allmem[$counter]['renewyear'] == ($this->renewyear -2)) {
+					$twoAgo++;
+				} else {
+					$threeAgo++;
+				}
+			} elseif (($this->allmem[$counter]['renewyear'] == $this->renewyear) || ($this->allmem[$counter]['renewyear'] > $this->renewyear)) {
+				$currYr++;
+				$member = new memobject($this->allmem[$counter]['ncednum']);
+				if ($member->get_ryear() == $this->renewyear){
+					if (($member->get_payment() == 35) || ($member->get_payment() == '')) {
+						$currYrOnly++;
+					} else {
+						$currYrThree++;
+					}
+				} elseif ($member->get_ryear() == ($this->renewyear + 1)) {
+					$currYrThree++;
+					$nextYr++;
+				} else {
+					$currYrThree++;
+					$nextYr++;
+					$twoYr++;
+				}
 			}
 			
 		}
-		return $numberOf;
+
+		?>
+			<div class="row">
+	            <div class = "medium-4 columns"> <h5><?
+	            	$previous = $this->renewyear-1;
+	                echo "# Renewed ".$previous.": <strong>{$prevYr}</strong>"; ?></h5>
+	            </div>
+	            <div class = "medium-4 columns"> <h5><?
+	                echo "# Renewed ".$this->renewyear.": <strong>{$currYr}</strong>"; ?></h5>
+	            </div>
+	            <div class = "medium-4 columns"> <h5><?
+		            echo "# Revoked: <strong>{$revoked}</strong>"; ?></h5>
+	            </div> 
+        	</div>
+        	<div class="row">
+	            <div class = "medium-3 columns"> <h6><?
+	                echo "# ".$this->renewyear." (1yr renewal): <strong>{$currYrOnly}</strong>"; ?></h6>
+	            </div>
+	            <div class = "medium-3 columns"> <h6><?
+	                echo "# ".$this->renewyear." (3yr renewal): <strong>{$currYrThree}</strong>"; ?></h6>
+	            </div>
+	            <div class = "medium-3 columns"> <h6><?
+	            	$nextYear = $this->renewyear + 1;
+		            echo "# ".$nextYear.": <strong>{$nextYr}</strong>"; ?></h6>
+	            </div> 
+	            <div class = "medium-3 columns"> <h6><?
+	            	$nextYear++;
+		            echo "# ".$nextYear.": <strong>{$twoYr}</strong>"; ?></h6>
+	            </div> 
+        	</div>
+        	<div class="row">
+	            <div class = "medium-6 columns"> <h6><?
+	            	$previous--;
+	                echo "# Last renewed in ".$previous.": <strong>{$twoAgo}</strong>"; ?></h6>
+	            </div>
+	            <div class = "medium-6 columns"> <h6><?
+	            	$previous--;
+	                echo "# Last renewed in ".$previous." or longer: <strong>{$threeAgo}</strong>"; ?></h6>
+	            </div>
+        	</div>
+            <?
 	}
+
+
 
 	function search_member_form($whichPage){
 		?> 
@@ -191,7 +257,7 @@ class memadmin {
 		global $database;
 		$renewyear = date('Y')+1;
 		$status = "RENEWED";
-		$ncednum = (int) $database->escape_value($info['ncednum']);
+		$ncednum = $database->escape_value($info['ncednum']);
 		$sql = "INSERT INTO renewal (";
 		$sql .= "ncednum, fname, lname, status, renewyear";
  		$sql .= ") VALUES ('";
@@ -203,7 +269,7 @@ class memadmin {
 		$database->query($sql);
 
 		$sql = "INSERT INTO nceddata (";
-		$sql .= "ncednum, fname, lname, email, street, city, state, zip, wphone, hphone, cphone";
+		$sql .= "ncednum, fname, lname, email, staddress, city, state, zip, wphone, hphone, cphone";
  		$sql .= ") VALUES ('";
  		$sql .= $ncednum ."', '";
 		$sql .= $database->escape_value($info['fname']) ."', '";

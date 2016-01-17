@@ -8,6 +8,8 @@ class memobject {
 	private $ryear;
 	private $memstatus;
 	private $ncednum;
+	private $lastPayment;
+	private $paymentDate;
 	
 	function __construct($ncednum) {
 		global $database;
@@ -23,6 +25,13 @@ class memobject {
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		$this->memstart = $value['whenst'];
+		$sql="SELECT * FROM rmoney WHERE ncednum ='".$this->ncednum."' ORDER BY numid";
+		$result_set = $database->query($sql);
+		$temp = array();
+		while ($info = $database->fetch_array($result_set)) {
+			$this->lastPayment = $info['amount'];
+			$this->paymentDate = $info['rdate'];
+		}
 	}
 	
 	
@@ -44,6 +53,14 @@ class memobject {
 
 	function get_displayname() {
 		return $this->fname.' '.$this->lname;
+	}
+
+	function get_payment(){
+		return $this->lastPayment;
+	}
+
+	function get_lastPayDate(){
+		return $this->paymentDate;
 	}
 
 	function display_member() {
@@ -78,7 +95,7 @@ class memobject {
 
 	function payment_history(){
 		global $database;
-		$sql="SELECT * FROM rmoney WHERE ncednum ='".$this->ncednum."' ORDER BY rdate";
+		$sql="SELECT * FROM rmoney WHERE ncednum ='".$this->ncednum."' ORDER BY numid";
 		$result_set = $database->query($sql);
 		?> 
 		<h4>Payment History</h4>
@@ -95,6 +112,8 @@ class memobject {
 		}
 		?> </table> <?
 	}
+
+
 	
 	function get_multiple(){
 		$the_year = date('Y', strtotime($this->memstart));

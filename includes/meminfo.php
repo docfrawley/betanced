@@ -25,7 +25,7 @@ class infobject {
 		$this->fname = $value['fname'];
 		$this->preferred = $value['preferred'];
 		$this->email = $value['email'];
-		$this->street = $value['street'];
+		$this->street = $value['staddress'];
 		$this->city = $value['city'];
 		$this->state = $value['state'];
 		$this->zip = $value['zip'];
@@ -60,7 +60,7 @@ class infobject {
 		$sql .= "fname='". $database->escape_value($info['fname']) ."', ";
 		$sql .= "preferred='". $database->escape_value($info['preferred']) ."', ";
 		$sql .= "email='". $database->escape_value($info['email']) ."', ";
-		$sql .= "street='". $database->escape_value($info['street']) ."', ";
+		$sql .= "staddress='". $database->escape_value($info['street']) ."', ";
 		$sql .= "city='". $database->escape_value($info['city']) ."', ";
 		$sql .= "state='". $database->escape_value($info['state']) ."', ";
 		$sql .= "zip='". $database->escape_value($info['zip']) ."', ";
@@ -78,7 +78,7 @@ class infobject {
 		$this->fname = $value['fname'];
 		$this->preferred = $value['preferred'];
 		$this->email = $value['email'];
-		$this->street = $value['street'];
+		$this->street = $value['staddress'];
 		$this->city = $value['city'];
 		$this->state = $value['state'];
 		$this->zip = $value['zip'];
