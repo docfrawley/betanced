@@ -9,10 +9,10 @@ if (isset($_SESSION['ncedadmin'])) {
     }
 
     if (isset($_POST['ncednumber']) || isset($_POST['LastName']) || isset($_GET['ncednumberL'])){ 
-        if ((isset($_POST['ryear'])) || (isset($_POST['editinfo']))){
+        if ((isset($_POST['howchange'])) || (isset($_POST['editinfo']))){
             $ncednumber = $_POST['ncednumber'];
             $member = new memobject($ncednumber);
-            if (isset($_POST['ryear'])){
+            if (isset($_POST['howchange'])){
                 $member->update_renew($_POST);
             }
         } else {

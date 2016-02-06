@@ -5,6 +5,8 @@ class memadmin {
 	private $allmem;
 	private $renewopen;
 	private $renewyear;
+	private $oneYear;
+	private $threeYear;
 
 	
 	function __construct() {
@@ -20,6 +22,8 @@ class memadmin {
 		$value= $database->fetch_array($result_set);
 		$this->renewopen = $value['isopen'];
 		$this->renewyear = $value['theyear'];
+		$this->oneYear = $value['oneyr'];
+		$this->threeYear = $value['threeyr'];
 	}
 
 	function get_year(){
@@ -171,6 +175,16 @@ class memadmin {
 		 			} ?>
 		 		</div>
 		 	</div>
+		 	<div class="row">
+		 		<div class="small-6 columns">
+		 			<label>Amount for 1yr Renewal</label>
+		 			<input type="text" name="oneYear" value="<? echo $this->oneYear; ?>"/>
+		 		</div>
+		 		<div class="small-6 columns">
+		 			<label>Amount for 3yr Renewal</label>
+		 			<input type="text" name="threeYear" value="<? echo $this->threeYear; ?>"/>
+		 		</div>
+		 	</div>
 			<div class="row">
 		 		<div class="small-6 columns">
         			<input type="submit" value="Submit" class="button tiny radius"/>
@@ -211,9 +225,13 @@ class memadmin {
 		global $database;
 		$this->renewopen = ($info['renewal']=="open");
 		$this->renewyear = $database->escape_value($info['ryear']);
+		$this->oneYear = $database->escape_value($info['oneYear']);
+		$this->threeYear = $database->escape_value($info['threeYear']);
 		$sql = "UPDATE renewinfo SET ";
 		$sql .= "isopen='". $this->renewopen ."', ";
-		$sql .= "theyear='". $this->renewyear ."'";
+		$sql .= "theyear='". $this->renewyear ."', ";
+		$sql .= "oneyr='". $this->oneYear ."', ";
+		$sql .= "threeyr='". $this->threeYear ."'";
 	  	$database->query($sql);
 	}
 

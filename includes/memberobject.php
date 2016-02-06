@@ -10,6 +10,7 @@ class memobject {
 	private $ncednum;
 	private $lastPayment;
 	private $paymentDate;
+	private $pending;
 	
 	function __construct($ncednum) {
 		global $database;
@@ -21,6 +22,7 @@ class memobject {
 		$this->fname = $value['fname'];
 		$this->ryear = $value['renewyear'];
 		$this->memstatus = $value['status'];
+		$this->pending = $value['pending'];
 		$sql="SELECT * FROM memstart WHERE ncednum ='".$this->ncednum."'";
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
@@ -36,15 +38,24 @@ class memobject {
 	
 	
 	function get_status() {
-		if ($this->memstatus == "RENEWED" && ($this->ryear == date('Y') || $this->ryear > date('Y'))) {
+		if ($this->memstatus == "RENEWED") {
 			echo "Renewed through {$this->ryear}";
+			if ($this->get_pending()){
+				echo ".<br/>Member has initiated renewal process and is PENDING renewal.";
+			}
+		} elseif ($this->memstatus == "REVOKED") {
+			echo "Membership has been revoked";
 		} else {
-			echo "Your membership is NOT renewed";
+			echo "Membership is NOT renewed. Last year of renewal: {$this->ryear}" ;
 		}
 	}
 
 	function get_ryear() {
 		return $this->ryear;
+	}
+
+	function get_pending() {
+		return ($this->pending == 'yes');
 	}
 
 	function get_memstart() {
@@ -135,23 +146,40 @@ class memobject {
 
 	function update_renew($value){
 		global $database;
-		$this->ryear = $database->escape_value($value['ryear']);
-		$status = $database->escape_value($value['rstatus']);
-		if ($status == 'NONPEND'){
-			$updateStatus = $this->memstatus;
-		} else {
-			$updateStatus = $status;
-			$this->memstatus = $status;
+		$howchange = $database->escape_value($value['howchange']);
+		switch ($howchange) {
+			case 'oneyear':
+				$this->ryear++;
+				$this->memstatus = 'RENEWED';
+				$this->pending = "";
+				break;
+			case 'threeyear':
+				$this->ryear +=3;
+				$this->memstatus = 'RENEWED';
+				$this->pending = "";
+				break;
+			case 'nonpend':
+				$this->pending = "";
+				break;
+			case 'revoked':
+				$this->memstatus = 'REVOKED';
+			break;
+			default:
+				break;
 		}
 		$sql = "UPDATE renewal SET ";
-		$sql .= "status='". $updateStatus ."', ";
-		$sql .= "pending='', ";
+		$sql .= "status='". $this->memstatus ."', ";
+		$sql .= "pending='". $this->pending ."', ";
 		$sql .= "renewyear='". $this->ryear ."'";
 		$sql .= " WHERE ncednum='". $this->ncednum ."'";
 	  	$database->query($sql);
-	  	if ($status != 'NONPEND'){
+	  	if ($howchange == 'oneyear' || $howchange== 'threeyear'){
 		  	$today = new DateTime;
 		  	$amount = $database->escape_value($value['amount']);
+		  	$manner = $database->escape_value($value['amount']);
+		  	if ($manner == "SELECT") {
+		  		$manner = "";
+		  	}
 		  	if ($amount[0] == "$"){
 		  		$amount = substr($amount, 1);
 		  	}
@@ -169,7 +197,7 @@ class memobject {
 			$result_set = $database->query($sql);
 			$info = $database->fetch_array($result_set);
 			$to = $info['email'];
-			if ($status != 'NONPEND'){
+			if ($howchange == 'oneyear' || $howchange== 'threeyear'){
 				$subject = "NCED Renewal Confirmation";
 				$message = 'Dear '.$this->get_displayname().','."\r\n"."\r\n";
 				$message .= "Congratulations. You are renewed through {$this->ryear}."."\r\n"."\r\n";
@@ -177,7 +205,7 @@ class memobject {
 				$message .= 'If you have any questions about your membership, please feel free to reply to this email.'."\r\n"."\r\n";
 				$message .= 'Sincerely,'."\r\n"."\r\n";
 				$message .= 'The NCED Board';
-			} else {
+			} elseif ($howchange == 'nonpend'){
 				$subject = "NCED Renewal Form";
 				$message = 'Dear '.$this->get_displayname().','."\r\n"."\r\n";
 				$message .= "We have reset your online renewal form so that you can now begin again the renewal online process."."\r\n"."\r\n";
@@ -203,35 +231,42 @@ class memobject {
 			 				<p>We do not have an email for this member. You will have to enter an email address in the contact information form to the left and submit before completing this form if you want to send an automatic email when updating this member's membership status.</p>
 			 			</div> <?
 				 	} ?>
+				 	<div class="small-12 columns">
+				 			<p>
+				 				<?
+				 				$oneYearR = $this->ryear +1;
+				 				$threeYearR = $this->ryear + 3;
+				 				echo $this->get_displayname()." is renewed through <strong>".$this->ryear.".</strong> ";
+				 				echo "A one year renewal payment will renew this member through <strong>".$oneYearR."</strong>. ";
+				 				echo "A three year renewal payment will renew this member through <strong>".$threeYearR."</strong>.<br/>";
+				 				if ($this->get_pending()){
+				 					echo "This member has initiated the renewal process. To reset their renewal form so they can start the renewal process again, click on NON-PENDING.";
 
+				 				}
+
+				 				?>
+				 			</p>
+				 	</div>
 			 		<div class="small-12 columns">
 			 			<label>Renewal Status</label>
-			 				<select name="rstatus">
-			 					<option selected="selected" value="<? echo $this->memstatus; ?>"/> <? echo $this->memstatus; ?> </option>
-				        		<option value="RENEWED"/> RENEWED </option>
-				        		<option value="REVOKED"/> REVOKED</option>
-				        		<option value="NONPEND"/> NON-PENDING </option>
-						 	</select>
+
+			 			<input type="radio" name="howchange" value="oneyear"> ONE YEAR RENEWAL<br/>
+						<input type="radio" name="howchange" value="threeyear"> THREE YEAR RENEWAL<br/>
+						<? if ($this->get_pending()) { ?>
+							<input type="radio" name="howchange" value="nonpend"> NON-PENDING<br/> 
+						<? } ?>
+						<input type="radio" name="howchange" value="revoked"> REVOKED<br/>
 			 		</div>	
-			 		<div class="small-12 columns">
-			 			<label>Renewal Year</label>
-			 				<select name="ryear">
-			 					<option selected="selected" value="<? echo $this->ryear; ?>"/> <? echo $this->ryear; ?> </option>
-						 		<? 
-			 					for ($x=0; $x<6; $x++){
-			 						?><option value="<? echo date('Y')+$x; ?>"/> <? echo date('Y')+$x; ?> </option><?
-			 					}
-			 					?>
-			 			 	</select>
-			 		</div>
+			 		
 			 		<div class="row">
 				 		<div class="small-6 columns">
-				 			<label>Payment Amount</label>
+				 			<label>Payment Amt For Renewals</label>
 				 			<input type="text" name="amount" placeholder="Eg. 35.00"/>	
 				 		</div>	
 				 		<div class="small-6 columns">
 				 			<label>Payment Method</label>
 				 				<select name="manner">
+				 					<option value="select"/> SELECT </option>
 					        		<option value="paypal"/> PAYPAL </option>
 					        		<option value="check"/> CHECK</option>
 							 	</select>
@@ -240,7 +275,7 @@ class memobject {
 			 		<input type="hidden" name="ncednumber" value="<? echo $this->ncednum; ?>"/>
 				 	<div class="small-12 columns">
 				 		<? 	if ($meminfo->get_email() != "") { ?>
-	        					<input type="checkbox" name="email" value="yes"> <label>Send email about renewal status change?</label> <?
+	        					<input type="checkbox" name="email" value="yes"> <label>Send email about renewal status change?<br/>Does not work for REVOKE</label> <?
 				 			} ?>
 				 		
 	        		</div>	
