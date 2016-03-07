@@ -32,4 +32,5 @@ include_once(LIB_PATH.DS.'boardadmin.php');
 include_once(LIB_PATH.DS.'boardmember.php');
 include_once(LIB_PATH.DS.'mapobjects.php');
 include_once(LIB_PATH.DS.'mobject.php');
+include_once(LIB_PATH.DS.'registryobject.php');
 ?>

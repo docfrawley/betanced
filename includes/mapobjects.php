@@ -13,7 +13,7 @@ class all_maps {
 	function set_maps(){
 		global $database;
 		$this->map_array=array();
-		$sql="SELECT * FROM markers";
+		$sql="SELECT * FROM markers ORDER BY tdate";
 		$result_set = $database->query($sql);
 		while($value = $database->fetch_array($result_set)){ //
 			array_push($this->map_array,$value['numid']);
@@ -127,8 +127,11 @@ class all_maps {
 	
 	function print_maps(){
 		$this->set_maps();
+		$date1 = new DateTime("now");
 		foreach ($this->map_array as $ind_spot) {
 			$info = new map_object($ind_spot);
+			$date2 = new DateTime($info->get_tdate());
+			if ($date2>=$date1){
 				?> <tr><td>
 				<a href="?task=editM&id=<? echo $info->get_id(); ?>"><? echo $info->get_name().":  ".$info->get_address(); ?></a></br>
 				<? echo nl2br($info->get_content()); 
@@ -136,8 +139,18 @@ class all_maps {
 				?>
 				</td><td><a href="?task=deleteM&id=<? echo $info->get_id(); ?>" class="button tiny radius">DELETE</a>
 				</td></tr><?
-			
+			}
 		}
+	}
+
+	function list_sites(){
+		$this->set_maps();
+		?><ul><?
+		foreach ($this->map_array as $id) {
+			$site = new map_object($id);
+			echo "<li><h5>".$site->get_tdate().":\t".$site->get_address()."</h5></li>";
+		}
+		?></ul><?
 	}
 	
 }

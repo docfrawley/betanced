@@ -4,9 +4,19 @@
 
 
 <div class="row">
-	<div class="small-12 columns">
+	<div class="medium-7 columns">
 		<img src="img/header.png" alt="header" />
 	</div>
+  <div class="medium-5 columns">
+    <div class="row">
+      <div class="small-6 columns">
+        <a href="registry.php" class="button">REGISTRY</a>
+      </div>
+      <div class="small-6 columns">
+        <a href="#" class="button">CERTIFICATION</a>
+      </div>
+  </div>
+  </div>
 </div>
 <div class="row">
     <div class="medium-5 columns">
@@ -25,19 +35,8 @@
             <li><img src="img/5thpic.gif" alt="slide 5" /></li>
          </ul>
 	</div>
-	<div class="medium-3 columns">
-		<div class="panel">
-			NATIONAL REGISTRY
-		</div>
-		<div class="panel">
-			LEARN MORE
-		</div>
-		<div class="panel">
-			SIGN UP NOW
-			EXAM DATES & LOCATIONS
-		</div>
-	</div>
-  <div class="medium-4 columns show-for-medium-up">
+  <div class="medium-7 columns">
+    <h3 class="text-center"><strong>NCED NEWS</strong></h3>
         <? $announcements = new all_announcements(); 
         if ($announcements->num_announce() > 0) {
           ?>
@@ -56,8 +55,8 @@
   </div>
 </div>
 <div class="row">
-	<div class="medium-8">
-		<div id="map" style="height: 350px"></div>
+	<div class="medium-6 columns">
+		<li id="map" style="height: 350px"></li>
 
     <script type="text/javascript">
     //<![CDATA[
@@ -121,7 +120,21 @@
 
   </script>
 	</div>
-	<div class="medium-4">
+	<div class="medium-6 columns">
+    <div class="row">
+      <div class="medium-6 columns">
+        <h3 class="text-center"><strong>TEST SITES</strong></h3>
+      </div>
+      <div class="medium-6 columns">
+        <a href="registry.php" class="button radius tiny">REGISTER FOR EXAM</a>
+      </div>
+      <div class="medium-12 columns">
+        <? 
+          $testSites = new all_maps();
+          $testSites->list_sites();
+        ?>
+      </div>
+    </div>
 	</div>
 </div>
 

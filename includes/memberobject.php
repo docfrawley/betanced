@@ -63,6 +63,12 @@ class memobject {
 	}
 
 	function get_displayname() {
+		global $database;
+		$sql="SELECT * FROM renewal WHERE ncednum ='".$this->ncednum."'";
+		$result_set = $database->query($sql);
+		$value = $database->fetch_array($result_set);
+		$this->lname = $value['lname'];
+		$this->fname = $value['fname'];
 		return $this->fname.' '.$this->lname;
 	}
 
@@ -269,6 +275,8 @@ class memobject {
 				 					<option value="select"/> SELECT </option>
 					        		<option value="paypal"/> PAYPAL </option>
 					        		<option value="check"/> CHECK</option>
+					        		<option value="money order"/> MONEY ORDER</option>
+					        		<option value="cash"/> CASH</option>
 							 	</select>
 				 		</div>	
 				 	</div>

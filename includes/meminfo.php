@@ -55,37 +55,41 @@ class infobject {
 
 	function info_update($info) {
 		global $database;
+		$this->lname = $database->escape_value($info['lname']);
+		$this->fname = $database->escape_value($info['fname']);
+		$this->preferred = $database->escape_value($info['preferred']);
+		$this->email = $database->escape_value($info['email']);
+		$this->street = $database->escape_value($info['street']);
+		$this->city = $database->escape_value($info['city']);
+		$this->state = $database->escape_value($info['state']);
+		$this->zip = $database->escape_value($info['zip']);
+		$this->wphone = $database->escape_value($info['wphone']);
+		$this->hphone = $database->escape_value($info['hphone']);
+		$this->cphone = $database->escape_value($info['cphone']);
+		$this->prefphone = $database->escape_value($info['prefphone']);	
+
 		$sql = "UPDATE nceddata SET ";
-		$sql .= "lname='". $database->escape_value($info['lname']) ."', ";
-		$sql .= "fname='". $database->escape_value($info['fname']) ."', ";
-		$sql .= "preferred='". $database->escape_value($info['preferred']) ."', ";
-		$sql .= "email='". $database->escape_value($info['email']) ."', ";
-		$sql .= "staddress='". $database->escape_value($info['street']) ."', ";
-		$sql .= "city='". $database->escape_value($info['city']) ."', ";
-		$sql .= "state='". $database->escape_value($info['state']) ."', ";
-		$sql .= "zip='". $database->escape_value($info['zip']) ."', ";
-		$sql .= "wphone='". $database->escape_value($info['wphone']) ."', ";
-		$sql .= "hphone='". $database->escape_value($info['hphone']) ."', ";
-		$sql .= "cphone='". $database->escape_value($info['cphone']) ."', ";
-		$sql .= "prefphone='". $database->escape_value($info['prefphone']) ."' ";
+		$sql .= "lname='". $this->lname ."', ";
+		$sql .= "fname='". $this->fname ."', ";
+		$sql .= "preferred='". $this->preferred ."', ";
+		$sql .= "email='". $this->email ."', ";
+		$sql .= "staddress='". $this->street ."', ";
+		$sql .= "city='". $this->city ."', ";
+		$sql .= "state='". $this->state ."', ";
+		$sql .= "zip='". $this->zip ."', ";
+		$sql .= "wphone='". $this->wphone ."', ";
+		$sql .= "hphone='". $this->hphone ."', ";
+		$sql .= "cphone='". $this->cphone ."', ";
+		$sql .= "preferredph='". $this->prefphone ."' ";
 		$sql .= "WHERE ncednum='". $this->ncednum  ."'";
 		$database->query($sql);		
+		
 		$_SESSION['tryagainc'] = "Your contact information has been updated.";
-		$sql="SELECT * FROM nceddata WHERE ncednum ='".$this->ncednum ."'";
-		$result_set = $database->query($sql);
-		$value = $database->fetch_array($result_set);
-		$this->lname = $value['lname'];
-		$this->fname = $value['fname'];
-		$this->preferred = $value['preferred'];
-		$this->email = $value['email'];
-		$this->street = $value['staddress'];
-		$this->city = $value['city'];
-		$this->state = $value['state'];
-		$this->zip = $value['zip'];
-		$this->wphone = $value['wphone'];
-		$this->hphone = $value['hphone'];
-		$this->cphone = $value['cphone'];
-		$this->prefphone = $value['prefphone'];	
+		$sql = "UPDATE renewal SET ";
+		$sql .= "lname='". $this->lname ."', ";
+		$sql .= "fname='". $this->fname ."' ";
+		$sql .= "WHERE ncednum='". $this->ncednum  ."'";
+		$database->query($sql);		
 	}
 	
 	function info_form($admin=false, $where = 'memberin.php') {?> 
