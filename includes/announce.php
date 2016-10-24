@@ -159,8 +159,8 @@ class all_announcements {
 			} else {
 				?> 	<li data-orbit-slide="headline-<? echo $count; ?> ">
 	              <div>
-	                <h4><? echo $info->get_title(); ?></h4>
-	                <h5><? echo nl2br($info->get_announce()); ?></h5>
+	                <strong><? echo $info->get_title(); ?></strong>
+	                <p><? echo nl2br($info->get_announce()); ?></p>
 	              </div>
             	</li>
             	<?

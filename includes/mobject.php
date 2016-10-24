@@ -8,6 +8,7 @@ class map_object {
 	private $content;
 	private $name;
 	private $tdate;
+	private $whatshow;
 	private $numid;
 	
 	function __construct($id = 0) {
@@ -19,6 +20,7 @@ class map_object {
 			$this->name = "";
 			$this->content = "";
 			$this->tdate = "";
+			$this->whatshow="";
 			$this->numid = 0;
 		} else {
 			$sql="SELECT * FROM markers WHERE numid='".$id."'";
@@ -30,6 +32,7 @@ class map_object {
 			$this->name = $value['name'];
 			$this->content = $value['content'];
 			$this->tdate = $value['tdate'];
+			$this->whatshow = $value['whatshow'];
 			$this->numid = $id;
 		}
 	}
@@ -68,6 +71,10 @@ class map_object {
 
 	function get_tdate() {
 		return $this->tdate;
+	}
+
+	function get_whatshow() {
+		return $this->whatshow;
 	}
 }
 ?>

@@ -48,12 +48,13 @@ if (isset($_SESSION['ncednumber'])) {
             </div> 
             <div class = "medium-2 columns"> 
             <? if ($archive) {
-                echo '<a href="ceupage.php" class="button small">CURRENT CEUs</a>'; 
+                echo '<a href="ceupage.php" class="button small ceu-button">CURRENT CEUs</a>'; 
             } elseif (isset($_GET['updateceu'])) {
-                echo "<a href='ceupage.php?deleteceu={$upceu->get_numindex()}' class='button small round alert'>DELETE CEU</a><br/>"; 
-                echo "<a href='ceupage.php' class='button small round success'>CEU MAIN PAGE</a>"; 
+                echo "<a href='ceupage.php' class='button small radius'>CEU MAIN PAGE</a><br/>"; 
+                echo "<a href='ceupage.php?deleteceu={$upceu->get_numindex()}' class='button small radius alert'>DELETE CEU</a>"; 
+                
             } else {
-                echo '<a href="?archive=yes" class="button small">ARCHIVED CEUs</a>'; 
+                echo '<a href="?archive=yes" class="button small radius">ARCHIVED CEUs</a>'; 
             } ?>
             </div> 
         </div> <? 

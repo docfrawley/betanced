@@ -1,14 +1,14 @@
 <? include_once("initialize.php");
 
 class boardMember {
-	
+
 	private $ncednum;
 	private $name;
 	private $bio;
 	private $state;
 	private $title;
 	private $currentB;
-	
+
 	function __construct($ncednum) {
 		global $database;
 		$this->ncednum = $ncednum;
@@ -36,12 +36,12 @@ class boardMember {
 		return $this->currentB;
 	}
 
-	function print_member($key){
-		?><table><tr> <?
-		?><td><? echo "<a data-reveal data-reveal-id='".$key."''>".$this->name."</a>"; ?></td><?
-		?><td><? echo $this->title; ?></td><?
-		?><td><? echo get_state($this->state); ?></td><?
-		?></tr></table> <?
+	function print_member($key=0){
+		if ($this->name != ""){
+			echo "<a data-reveal data-reveal-id='".$key."''>".$this->name."</a>";
+			echo ", ".$this->title;
+			echo ", ".get_state($this->state);
+		}
 	}
 
 	function get_name(){

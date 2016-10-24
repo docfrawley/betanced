@@ -7,7 +7,7 @@
 // (\ for Windows, / for Unix)
 defined('DS') ? null : define('DS', DIRECTORY_SEPARATOR);
 
-defined('SITE_ROOT') ? null : 
+defined('SITE_ROOT') ? null :
 	define('SITE_ROOT', DS.'Applications'.DS.'MAMP'.DS.'htdocs'.DS.'betanced');
 
 defined('LIB_PATH') ? null : define('LIB_PATH', SITE_ROOT.DS.'includes');
@@ -33,4 +33,8 @@ include_once(LIB_PATH.DS.'boardmember.php');
 include_once(LIB_PATH.DS.'mapobjects.php');
 include_once(LIB_PATH.DS.'mobject.php');
 include_once(LIB_PATH.DS.'registryobject.php');
+include_once(LIB_PATH.DS.'email_object.php');
+include_once(LIB_PATH.DS.'indregistry.php');
+include_once(LIB_PATH.DS.'tresult_object.php');
+include_once(LIB_PATH.DS.'email_contact.php');
 ?>

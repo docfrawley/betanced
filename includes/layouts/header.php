@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width" />
 <title>NCED Online</title>
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/foundation-datepicker.min.css">
@@ -12,57 +13,59 @@
 
 <body onload="load()">
   <? session_start(); ?>
-  
+
     <div class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
         <nav class="tab-bar hide-for-medium-up">
             <section class="left-small">
-              <a class="left-off-canvas-toggle menu-icon"><span>NCED</span></a>
+              <a class="left-off-canvas-toggle menu-icon" href="#"><span>NCED</span></a>
             </section>
         </nav>
             <aside class="left-off-canvas-menu">
               <ul class="off-canvas-list">
                 <li><a href="index.php">Home</a></li>
-                
-                <li><a href="#">About</a>
+
+                <li><a href="#">ABOUT</a>
                  <ul>
-                    <li><a href="#">One</a></li>
-                    <li><a href="#">Two</a></li>
+                    <li><a href="pdfs/NCEDbenefits.pdf">BENEFITS OF NCED</a></li>
+                    <li><a href="pdfs/bylaws.pdf">BY-LAWS</a></li>
+                    <li><a href="pdfs/standingrules.pdf">STANDING RULES</a></li>
                     <li><a href="board.php">BOARD OF DIRECTORS</a></li>
-                    <li><a href="#">Four</a></li>
+                    <li><a href="pdfs/ncedhistory.pdf">HISTORY</a></li>
+                    <li><a href="pdfs/WhyBecome.pdf">WHY NCED?</a></li>
                   </ul>
                 </li>
-            
-                <li><a href="#">Be an NCED</a>
+
+                <li><a href="#">EXAMINATIONS</a>
                  <ul>
-                    <li><a href="#">ONE</a></li>
-                 <li><a href="#">TWO</a></li>
-                 <li><a href="#">THREE</a></li>
-                 <li><a href="#">FOUR</a></li>
+                    <li><a href="tresults.php">RESULTS</a></li>
+                 <li><a href="pdfs/studyguide.pdf">STUDY GUIDE</a></li>
                   </ul>
                 </li>
-                <li><a href="#">CONTACT</a></li>
-          <? 
-          if (isset($_SESSION['ncednumber'])) { ?> 
+                <li><a href="contact.php">CONTACT</a></li>
+          <?
+          if (isset($_SESSION['ncednumber'])) { ?>
           <li class="has-dropdown"><a href="#">MEMBER PAGES</a>
                <ul class="dropdown">
                  <li><a href="memberin.php">MEMBER HOME</a></li>
-                 <li><a href="#">TWO</a></li>
-                 <li><a href="#">THREE</a></li>
+                 <li><a href="registry.php">REGISTRY</a></li>
+                 <li><a href="ceupage.php">CEU PAGE</a></li>
+                 <li><a href="newsletters.php">NEWSLETTERS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
           </li>
-          <? } elseif (isset($_SESSION['ncedadmin'])) { ?> 
+          <? } elseif (isset($_SESSION['ncedadmin'])) { ?>
           <li class="has-dropdown"><a href="#">ADMIN PAGES</a>
                <ul class="dropdown">
                  <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
                  <li><a href="ncedboard.php">NCED BOARD</a></li>
                  <li><a href="testadmin.php">TEST SITES</a></li>
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
+                 <li><a href="reportsadmin.php">REPORTS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>
-          <? } else { ?> 
+          <? } else { ?>
           <li><a href="login.php">MEMBER LOGIN</a></li> <?
           } ?>
               </ul>
@@ -82,45 +85,50 @@
         <ul class="right">
             <li class="has-dropdown"><a href="#">ABOUT</a>
                <ul class="dropdown">
-                 <li><a href="#">ONE</a></li>
-                 <li><a href="#">TWO</a></li>
+                 <li><a href="pdfs/NCEDbenefits.pdf">BENEFITS OF NCED</a></li>
+                 <li><a href="pdfs/bylaws.pdf">BY-LAWS</a></li>
+                 <li><a href="pdfs/standingrules.pdf">STANDING RULES</a></li>
                  <li><a href="board.php">BOARD OF DIRECTORS</a></li>
-                 <li><a href="#">FOUR</a></li>
+                 <li><a href="pdfs/ncedhistory.pdf">HISTORY</a></li>
+                 <li><a href="pdfs/WhyBecome.pdf">WHY NCED?</a></li>
                </ul>
             </li>
-          <li class="has-dropdown"><a href="#">BE AN NCED</a>
-                 <ul class="dropdown">
-                    <li><a href="#">ONE</a></li>
-                 <li><a href="#">TWO</a></li>
-                 <li><a href="#">THREE</a></li>
-                 <li><a href="#">FOUR</a></li>
-                  </ul>
-              </li>
-          <li><a href="#">CONTACT</a></li>
-          <? 
-          if (isset($_SESSION['ncednumber'])) { ?> 
+
+            <li class="has-dropdown"><a href="#">EXAMINATIONS</a>
+              <ul class="dropdown">
+                <li><a href="tresults.php">RESULTS</a></li>
+             <li><a href="pdfs/studyguide.pdf">STUDY GUIDE</a></li>
+              </ul>
+            </li>
+
+            <li><a href="contact.php">CONTACT</a></li>
+          <?
+          if (isset($_SESSION['ncednumber'])) { ?>
           <li class="has-dropdown"><a href="#">MEMBER PAGES</a>
                <ul class="dropdown">
                  <li><a href="memberin.php">MEMBER HOME</a></li>
-                 <li><a href="#">TWO</a></li>
-                 <li><a href="#">THREE</a></li>
+                 <li><a href="registry.php">REGISTRY</a></li>
+                 <li><a href="ceupage.php">CEU PAGE</a></li>
+                 <li><a href="newsletters.php">NEWSLETTERS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
           </li>
-          <? } elseif (isset($_SESSION['ncedadmin'])) { ?> 
+          <? } elseif (isset($_SESSION['ncedadmin'])) { ?>
           <li class="has-dropdown"><a href="#">ADMIN PAGES</a>
                <ul class="dropdown">
                  <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
                  <li><a href="ncedboard.php">NCED BOARD</a></li>
                  <li><a href="testadmin.php">TEST SITES</a></li>
+                 <li><a href="emailadmin.php">EMAIL ADMIN</a></li>
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
+                 <li><a href="reportsadmin.php">REPORTS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>
-          <? } else { ?> 
+          <? } else { ?>
           <li><a href="login.php">MEMBER LOGIN</a></li> <?
           } ?>
         </ul>
       </section>
-    </nav>  
+    </nav>
     </div>

@@ -1,19 +1,25 @@
 <? include_once("initialize.php");
 
 class memadmin {
-	
+
 	private $allmem;
+	private $activeCerts;
+	private $inactiveCerts;
+	private $revoked;
 	private $renewopen;
 	private $renewyear;
 	private $oneYear;
 	private $threeYear;
 
-	
+
 	function __construct() {
 		global $database;
 		$sql="SELECT * FROM renewal ORDER BY ncednum";
 		$result_set = $database->query($sql);
 		$this->allmem = array();
+		$this->activeCerts = array();
+		$this->inactiveCerts = array();
+		$this->revoked = array();
 		while ($value = $database->fetch_array($result_set)) {
 			array_push($this->allmem, $value);
 		}
@@ -32,6 +38,39 @@ class memadmin {
 
 	function get_highnum(){
 		return count($this->allmem);
+	}
+
+	function get_revoked(){
+		$this->revoked = array();
+		for ($counter=1; $counter<= count($this->allmem); $counter++) {
+			if ($this->allmem[$counter]['status'] == 'REVOKED') {
+				array_push($this->revoked, $this->allmem[$counter]['ncednum']);
+			}
+		}
+	}
+
+	function get_num_pages($limit=20){
+		return ceil(count($this->allmem)/$limit);
+	}
+
+	function get_activeCerts(){
+		$this->activeCerts = array();
+		for ($counter=1; $counter<= count($this->allmem); $counter++) {
+			if ($this->allmem[$counter]['status'] == 'RENEWED' &&
+					$this->allmem[$counter]['renewyear'] > ($this->renewyear-4)){
+				array_push($this->activeCerts, $this->allmem[$counter]['ncednum']);
+			}
+		}
+	}
+
+	function get_inactiveCerts(){
+		$this->inactiveCerts = array();
+		for ($counter=1; $counter<= count($this->allmem); $counter++) {
+			if ($this->allmem[$counter]['status'] == 'RENEWED' &&
+					$this->allmem[$counter]['renewyear'] < $this->renewyear){
+				array_push($this->inactiveCerts, $this->allmem[$counter]['ncednum']);
+			}
+		}
 	}
 
 	function printMemberCounts(){
@@ -73,7 +112,7 @@ class memadmin {
 					$twoYr++;
 				}
 			}
-			
+
 		}
 
 		?>
@@ -87,7 +126,7 @@ class memadmin {
 	            </div>
 	            <div class = "medium-4 columns"> <h5><?
 		            echo "# Revoked: <strong>{$revoked}</strong>"; ?></h5>
-	            </div> 
+	            </div>
         	</div>
         	<div class="row">
 	            <div class = "medium-3 columns"> <h6><?
@@ -99,11 +138,11 @@ class memadmin {
 	            <div class = "medium-3 columns"> <h6><?
 	            	$nextYear = $this->renewyear + 1;
 		            echo "# ".$nextYear.": <strong>{$nextYr}</strong>"; ?></h6>
-	            </div> 
+	            </div>
 	            <div class = "medium-3 columns"> <h6><?
 	            	$nextYear++;
 		            echo "# ".$nextYear.": <strong>{$twoYr}</strong>"; ?></h6>
-	            </div> 
+	            </div>
         	</div>
         	<div class="row">
 	            <div class = "medium-6 columns"> <h6><?
@@ -118,10 +157,183 @@ class memadmin {
             <?
 	}
 
+	function get_renewal_list(){
+		$output = "";
+				 $output .= '
+						<table class="table" bordered="1">
+						<tr>';
+				$output .='<th>Complete Renewal List</th></tr>';
+				$output .='
+							<tr>
+								<th>NCED#</th>
+								<th>Active/Revoked</th>
+								<th>Date Certificate Issued</th>
+								<th> # CEUs </th>
+								<th>Date of Last Payment</th>
+								<th>Method of Payment</th>
+								<th>Amt of Last Payment</th>
+								<th>Paid upto Membership Year</th>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Address</th>
+								<th>City</th>
+								<th>State</th>
+								<th>Zip</th>
+								<th>Work Phone</th>
+								<th>Home Phone</th>
+								<th>Cell Phone</th>
+								<th>Primary Email</th>
+								<th>Secondary Email</th>
+							</tr>
+					 ';
+					 for ($counter=0; $counter< count($this->allmem); $counter++) {
+							$member = new infobject($this->allmem[$counter]['ncednum']);
+							$member_info = new memobject($this->allmem[$counter]['ncednum']);
+							$ceuinfo = new ceuinfo($this->allmem[$counter]['ncednum'], $member_info->set_archivedate());
+							$output .= '
+									 <tr>
+												<td>'.$member->get_ncednum().'</td>
+												<td>'.$member_info->get_memstatus().'</td>
+												<td>'.$member_info->get_memstart().'</td>
+												<td>'.$ceuinfo->num_ceus().'</td>
+												<td>'.$member_info->get_lastPayDate().'</td>
+												<td>'.$member_info->get_manner().'</td>
+												<td>'.$member_info->get_payment().'</td>
+												<td>'.$member_info->get_ryear().'</td>
+												<td>'.$member->get_fname().'</td>
+												<td>'.$member->get_lname().'</td>
+												<td>'.$member->get_address().'</td>
+												<td>'.$member->get_city().'</td>
+												<td>'.$member->get_state().'</td>
+												<td>'.$member->get_zip().'</td>
+												<td>'.$member->get_wphone().'</td>
+												<td>'.$member->get_hphone().'</td>
+												<td>'.$member->get_cphone().'</td>
+												<td>'.$member->get_email().'</td>
+												<td>'.$member->sec_email().'</td>
+									 </tr>';
+					 }
+					 $output .= '</table>';
+					 return $output;
+	}
+
+
+	function get_excel_list($wlist){
+		if ($wlist=="active") {
+			$this->get_activeCerts();
+			$temp_array = $this->activeCerts;
+		} else {
+			$this->get_revoked();
+			$temp_array = $this->revoked;
+		}
+		$output = "";
+				 $output .= '
+						<table class="table" bordered="1">
+						<tr>';
+				if ($wlist=='active'){
+					$output .='<th>Active Certificate Holders</th></tr>';
+				} else {
+					$output .='<th>Complete Renewal List</th></tr>';
+				}
+				$output .='
+							<tr>
+								<th>NCED#</th>
+								<th>Last Name</th>
+								<th>First Name</th>
+								<th>Date Certificate Issued</th>';
+								if ($wlist=='revoked'){
+									$output .='<th>Date Revoked</th>';
+								} else {
+									$output .='<th>Last Paid</th>';
+								}
+				$output .='
+								<th>Address</th>
+								<th>City</th>
+								<th>State</th>
+								<th>Zip</th>
+								<th>Work Phone</th>
+								<th>Home Phone</th>
+								<th>Cell Phone</th>
+								<th>Primary Email</th>
+								<th>Secondary Email</th>
+							</tr>
+					 ';
+					 for ($counter=0; $counter< count($temp_array); $counter++) {
+							$member = new infobject($temp_array[$counter]);
+							$member_info = new memobject($temp_array[$counter]);
+								$output .= '
+										 <tr>
+													<td>'.$member->get_ncednum().'</td>
+													<td>'.$member->get_lname().'</td>
+													<td>'.$member->get_fname().'</td>
+													<td>'.$member_info->get_memstart().'</td>';
+													if ($wlist=='revoked'){
+														$output .='<td>'.$member_info->get_date_revoked().'</td>';
+													} else {
+														$output .='<td>'.$member_info->get_lastPayDate().'</td>';
+													}
+									$output .='
+													<td>'.$member->get_address().'</td>
+													<td>'.$member->get_city().'</td>
+													<td>'.$member->get_state().'</td>
+													<td>'.$member->get_zip().'</td>
+													<td>'.$member->get_wphone().'</td>
+													<td>'.$member->get_hphone().'</td>
+													<td>'.$member->get_cphone().'</td>
+													<td>'.$member->get_email().'</td>
+													<td>'.$member->sec_email().'</td>
+										 </tr>
+								';
+					 }
+					 $output .= '</table>';
+					 return $output;
+	}
+
+	function show_renewals($page=1, $limit){
+		$start = $page*$limit-$limit;
+		for ($counter=$start; $counter< $page*$limit; $counter++) {
+			$member = new infobject($this->allmem[$counter]['ncednum']);
+			$member_info = new memobject($this->allmem[$counter]['ncednum']);
+			$ceuinfo = new ceuinfo($this->allmem[$counter]['ncednum'], $member_info->set_archivedate());?>
+					<tr><td><? echo $member->get_ncednum(); ?></td>
+					<td><? echo $member->get_fname(); ?></td>
+					<td><? echo $member->get_lname(); ?></td>
+					<td><? echo $member_info->get_memstatus(); ?></td>
+					<td><? echo $member_info->get_memstart(); ?></td>
+					<td><? echo $ceuinfo->num_ceus(); ?></td>
+					<td><? echo $member_info->get_lastPayDate(); ?></td>
+					<td><? echo $member_info->get_manner(); ?></td>
+					<td><? echo $member_info->get_payment(); ?></td>
+					<td><? echo $member_info->get_ryear(); ?></td></tr><?
+		}
+	}
+
+	function ajax_renewals($page=1, $limit){
+		$start = $page*$limit-$limit;
+		$temp_array = [];
+		for ($counter=$start; $counter< $page*$limit; $counter++) {
+			$next_array = [];
+			$member = new infobject($this->allmem[$counter]['ncednum']);
+			$member_info = new memobject($this->allmem[$counter]['ncednum']);
+			$ceuinfo = new ceuinfo($this->allmem[$counter]['ncednum'], $member_info->set_archivedate());
+					$next_array['ncednum']= $member->get_ncednum();
+					$next_array['fname']= $member->get_fname();
+					$next_array['lname']= $member->get_lname();
+					$next_array['status']= $member_info->get_memstatus();
+					$next_array['memstart']= $member_info->get_memstart();
+					$next_array['ceus']= $ceuinfo->num_ceus();
+					$next_array['paydate']= $member_info->get_lastPayDate();
+					$next_array['manner']= $member_info->get_manner();
+					$next_array['payment']= $member_info->get_payment();
+					$next_array['ryear']= $member_info->get_ryear();
+					array_push($temp_array, $next_array);
+		}
+		return $temp_array;
+	}
 
 
 	function search_member_form($whichPage){
-		?> 
+		?>
 		 <form action="<? echo $whichPage; ?>.php" method="POST">
 		 	<fieldset>
 		 		<?
@@ -142,6 +354,9 @@ class memadmin {
 		 	</div>
 			<div class="row">
 		 		<div class="small-12 columns">
+		 		<? if ($whichPage == 'emailadmin') { ?>
+		 			<input type="hidden" name="find_member" value="yes"/>
+		 		<? } ?>
         			<input type="submit" value="Submit" class="button tiny radius"/>
         		</div>
         	</div>
@@ -150,7 +365,7 @@ class memadmin {
 	}
 
 	function set_renew(){
-		?> 
+		?>
 		 <form action="ncedadmin.php" method="POST">
 		 	<fieldset>
 		 			<legend>Set Renew Year and Open/Close Renewal</legend>
@@ -207,7 +422,7 @@ class memadmin {
 			if ($value['pending']=='yes'){
 				$ncednumber=$value['ncednum'];
 				$person = new memobject($ncednumber);
-				?> <tr><td> 
+				?> <tr><td>
 					<a href="?ncednumberL=<? echo $ncednumber;  ?>"> <? echo $ncednumber; ?> </a>
 				</td><td> <?
 					echo $person->get_displayname();
@@ -215,7 +430,7 @@ class memadmin {
 					echo $value['status'];
 				?> </td><td> <?
 					echo $value['renewyear'];
-				?> </td></tr> <?			
+				?> </td></tr> <?
 			}
 		}
 		?> </table> <?
@@ -249,12 +464,13 @@ class memadmin {
 		$sql="SELECT * FROM renewal WHERE lname='".$lname."'";
 		$result_set = $database->query($sql);
 		if ($database->num_rows($result_set) >1) {
+			?><div class="row"><div class="small-7 columns panel"><?
 			echo "There are more than one member with that last name.<br/>Please chose from the members listed below.<br/>"
 			?><ul><?
 			while ($value = $database->fetch_array($result_set)) {
 				echo "<li><a href='{$where}.php?ncednumberL={$value["ncednum"]}'>{$value['fname']} {$value['lname']}</a></li>";
 			}
-			?></ul><?
+			?></ul></div></div><?
 		} elseif ($database->num_rows($result_set)==1) {
 			$value = $database->fetch_array($result_set);
 			return $value['ncednum'];
@@ -287,12 +503,13 @@ class memadmin {
 		$database->query($sql);
 
 		$sql = "INSERT INTO nceddata (";
-		$sql .= "ncednum, fname, lname, email, staddress, city, state, zip, wphone, hphone, cphone";
+		$sql .= "ncednum, fname, lname, email, secemail, staddress, city, state, zip, wphone, hphone, cphone";
  		$sql .= ") VALUES ('";
  		$sql .= $ncednum ."', '";
 		$sql .= $database->escape_value($info['fname']) ."', '";
 		$sql .= $database->escape_value($info['lname']) ."', '";
 		$sql .= $database->escape_value($info['email']) ."', '";
+		$sql .= $database->escape_value($info['secemail']) ."', '";
 		$sql .= $database->escape_value($info['staddress']) ."', '";
 		$sql .= $database->escape_value($info['city']) ."', '";
 		$sql .= $database->escape_value($info['state']) ."', '";
@@ -300,6 +517,14 @@ class memadmin {
 		$sql .= $database->escape_value($info['wphone']) ."', '";
 		$sql .= $database->escape_value($info['hphone']) ."', '";
 		$sql .= $database->escape_value($info['cphone']) ."')";
+		$database->query($sql);
+
+		$sql = "INSERT INTO natdirectory (";
+		$sql .= "ncednum, inorout, state";
+ 		$sql .= ") VALUES ('";
+ 		$sql .= $ncednum ."', '";
+		$sql .= 0 ."', '";
+		$sql .= $database->escape_value($info['state']) ."')";
 		$database->query($sql);
 
 		$today = date("F j, Y");
@@ -314,9 +539,9 @@ class memadmin {
 
 		$_SESSION['memmessage']="New Member has been added.";
 	}
-	
+
 	function new_member_form(){
-		?> 
+		?>
 		 <form action="ncedadmin.php" method="POST">
 		 	<fieldset>
 		 			<legend>Add New Member</legend>
@@ -324,12 +549,13 @@ class memadmin {
 		 		<div class="medium-3 columns">
 		 			<input type="text" name="ncednum" placeholder="NCED Number (# <? echo $this->get_highnum(); ?>)"/>
 		 		</div>
-		 		<div class="medium-5 columns">
+		 		<div class="medium-4 columns">
 		 			<input type="text" name="email" placeholder="Email Address"/>
 		 		</div>
-		 		<div class="medium-4 columns">
+		 		<div class="medium-4 columns left">
+		 			<input type="text" name="secemail" placeholder="Secondary Email"/>
 		 		</div>
-		 	</div>		
+		 	</div>
 		 	<div class="row">
 		 		<div class="medium-5 columns">
 		 			<input type="text" name="fname" placeholder="First Name"/>

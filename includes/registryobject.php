@@ -1,115 +1,109 @@
-<? include_once("initialize.php");
+<? include_once("initialize.php"); 
 
 class registryObject {
 	
 	private $lastLetter;
 	private $state;
 	private $speciality;
+	private $reg_members;
 	
-	function __construct($info) {
+	function __construct($info) { 
 		global $database;
 		$this->lastLetter = $database->escape_value($info['lname']);
 		$this->state = $database->escape_value($info['state']);
 		$this->speciality = $database->escape_value($info['speciality']);
+		$this->reg_members = array();
+		$tempArray = array();
+		$sql="SELECT * FROM natdirectory WHERE inorout =true ORDER BY ncednum";
+		$result_set = $database->query($sql);
+		while($value = $database->fetch_array($result_set)){
+			array_push($tempArray, $value['ncednum']);
+		}
+		$sql="SELECT * FROM renewal WHERE status != 'REVOKE' ORDER BY lname";
+		$result_set = $database->query($sql);
+		while($value = $database->fetch_array($result_set)){
+			if (in_array($value['ncednum'], $tempArray)) {
+				array_push($this->reg_members, $value['ncednum']);
+			}
+		}
+		
 	}
 
 	function check_submission() {
 		return ($this->lastLetter=="" && $this->state=="State" && $this->speciality=="");
 	}
 
-	function create_list(){
+	function create_list(){ 
 		global $database;
-		$tempArray =array();
-		$arrayCreated = false;  
+
 		if ($this->lastLetter !=""){
-			$arrayCreated=true;
-			$sql="SELECT * FROM natdirectory ORDER BY lname";
-			$result_set = $database->query($sql);
-			while($value = $database->fetch_array($result_set)){
-				$tempname = ucfirst($value['lname']);
+			$tempArray =array();
+			foreach ($this->reg_members as $value) {
+				$member = new infobject($value);
+				$tempname = ucfirst($member->get_lname());
 				if ($this->lastLetter == $tempname[0]){
 					array_push($tempArray, $value);
 				}
 			}
+			$this->reg_members = $tempArray;
+			
 		} 
-		if ($this->state !="State"){
-			if (!$arrayCreated){
-				$arrayCreated=true;
-				$sql="SELECT * FROM natdirectory ORDER BY lname";
-				$result_set = $database->query($sql);
-				while($value = $database->fetch_array($result_set)){
-					if ($this->state == ucfirst($value['state'])){
-						array_push($tempArray, $value);
-					}
+
+		if ($this->state !="State"){ 
+			$tempArray =array(); 
+			foreach ($this->reg_members as $value) {
+				$rmember = new ind_reg_object($value); 
+				if ($this->state == $rmember->get_state()){
+					array_push($tempArray, $value);
 				}
-			} else {
-				$stempArray = array();
-				foreach ($tempArray as $value) {
-					if ($this->state == $value['state']){
-						array_push($stempArray, $value);
-					}
-				}
-				$tempArray = $stempArray;
 			}
+			$this->reg_members = $tempArray;
 		}
 
 		if ($this->speciality !=""){
-			if (!$arrayCreated){
-				$arrayCreated=true;
-				$sql="SELECT * FROM natdirectory ORDER BY lname";
-				$result_set = $database->query($sql);
-				while($value = $database->fetch_array($result_set)){
-					if (($this->speciality == $value['speciality']) || ($this->speciality == $value['speciality2'])){
-						array_push($tempArray, $value);
-					}
+			$tempArray =array();
+			foreach ($this->reg_members as $value) {
+				$rmember = new ind_reg_object($value);
+				if (($this->speciality == $rmember->get_speciality()) || ($this->speciality == $rmember->get_speciality2())){
+					array_push($tempArray, $value);
 				}
-			} else {
-				$sptempArray = array();
-				foreach ($tempArray as $value) {
-					if (($this->speciality == $value['speciality']) || ($this->speciality == $value['speciality2'])){
-						array_push($sptempArray, $value);
-					}
-				}
-				$tempArray = $stempArray;
-			}
-		}
-		return $tempArray;
+			} 
+			$this->reg_members = $tempArray;
+		} 
 	}
 
 	function create_accordian(){
-		$theArray = $this->create_list();
-		if (count($theArray)>0){
+		$this->create_list();
+		if (count($this->reg_members)>0){
 			$counter = 1;
-			$first = true;
-			?>
-			<ul class="accordion" data-accordion>
-				<?  foreach ($theArray as $value) {
-					$ncednum = $value['ncednum'];
-					$member = new infobject($ncednum);
-				 ?>
-			  <li class="accordion-navigation">
-			  	<? $panelhash = "#panel".$counter."a"; ?>
-			  	<? $panel = "panel".$counter."a"; ?>
-			    <a href="<? echo $panelhash; ?>"><? echo $member->full_name(); ?></a>
-			    <? if ($first){
-			    	?> <div id="<? echo $panel; ?>" class="content active"> <?
-			    } else {
-			    	?> <div id="<? echo $panel; ?>" class="content"> <?
-			    } 
-			      echo $value['staddress']."<br/>";
-			      echo $value['city']."<br/>";
-			      echo $value['state']."<br/>";
-			      echo $value['zip']."<br/>";
-			      echo $value['email']."<br/>";
-			      echo $value['phone']."<br/>";
-			      echo $value['speciality']."<br/>";
-			      echo $value['speciality2']."<br/>";
-			      echo $value['otherlanguage']."<br/>";
-			      ?>
-			    </div>
-			  </li>
-			  <? 
-			  $first = false;
+			$first = true; ?>
+			<ul class="accordion" data-accordion> <?  
+				foreach ($this->reg_members as $value) {
+					$member = new memobject($value);
+					$registry_info = new ind_reg_object($value); ?>
+			  		<li class="accordion-navigation">
+				  		<? $panelhash = "#panel".$counter."a"; ?>
+				  		<? $panel = "panel".$counter."a"; ?>
+				    	<a href="<? echo $panelhash; ?>"><? echo $member->get_displayname(); ?></a>
+					    <? if ($first){
+					    	?> <div id="<? echo $panel; ?>" class="content active"> <?
+					    } else {
+					    	?> <div id="<? echo $panel; ?>" class="content"> <?
+					    } ?>
+					    	<div class="row">
+					    	<div class="small-4 columns">
+						    <table><tr><td><?
+							    echo $member->get_displayname(); ?>
+							    </td></tr> <?
+							    $registry_info->display_info(); ?>
+							</table>
+							</div>
+							<div class="small-8 columns">
+							<? $registry_info->display_specialties(); ?>
+							</div>
+					    </div>
+			    	</li> <? 
+			  	$first = false;
 			  	$counter++;
 				} ?>
 			</ul><?

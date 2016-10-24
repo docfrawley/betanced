@@ -1,25 +1,25 @@
 <? include_once("initialize.php");
 
 class ceuinfo {
-	
+
 	private $ceuarray;
 	private $archivearray;
 	private $cutoff;
 	private $ncednumber;
-	
+
 	function __construct($ncednumber, $dateneeded) {
 		global $database;
 		$this->cutoff = $dateneeded;
 		$this->ncednumber = $ncednumber;
 		$this->ceuarray = array();
 		$this->archivearray = array();
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate > '".$dateneeded."' ORDER BY areaceu";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND ceudate > '".$dateneeded."' ORDER BY areaceu";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
 			array_push($this->ceuarray, $newceu);
 		}
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND entrydate < '".$dateneeded."' ORDER BY areaceu";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$ncednumber."' AND ceudate < '".$dateneeded."' ORDER BY areaceu";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
@@ -30,7 +30,7 @@ class ceuinfo {
 	function set_ceuarray(){
 		global $database;
 		$this->ceuarray = array();
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$this->ncednumber."' AND entrydate > '".$this->cutoff."' ORDER BY ceudate";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$this->ncednumber."' AND ceudate > '".$this->cutoff."' ORDER BY ceudate";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
@@ -41,7 +41,7 @@ class ceuinfo {
 	function set_archivearray(){
 		$this->archivearray = array();
 		global $database;
-		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$this->ncednumber."' AND entrydate < '".$this->cutoff."' ORDER BY ceudate";
+		$sql="SELECT * FROM ceurenewal WHERE ncedid ='".$this->ncednumber."' AND ceudate < '".$this->cutoff."' ORDER BY ceudate";
 		$result_set = $database->query($sql);
 		while ($value = $database->fetch_array($result_set)) {
 			$newceu = new ceuobject($value['numindex']);
@@ -52,6 +52,15 @@ class ceuinfo {
 	function num_ceus(){
 		$this->set_ceuarray();
 		return count($this->ceuarray);
+	}
+
+	function total_current_ceus(){
+		$this->set_ceuarray();
+		$total_hrs = 0;
+		for ($x = 1; $x <= 6; $x++) {
+    	$total_hrs += $this->ceus_area($x);
+		}
+		return $total_hrs;
 	}
 
 	function num_archive(){
@@ -70,56 +79,66 @@ class ceuinfo {
 
 	function snapshot($whatTOdo = true) {
 		?>
-		<table>
-			<tr>
-				<td>
-					current Number of CEU entries:
-				</td>
-				<td>
-					<? echo $this->num_ceus(); ?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Archived:
-				</td>
-				<td>
-					<? echo $this->num_archive(); ?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Archival Date:<br/>CEUs prior to this date have been archived
-				</td>
-				<td>
-					<? echo date('F d, Y', $this->cutoff); ?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					Next Archival Date:
-				</td>
-				<td>
-					<? echo date('F d, Y', strtotime('+5 years', $this->cutoff)); ?>
-				</td>
-			</tr>
-			<? for ($i = 1; $i <= 6; $i++) { ?>
-			<tr>
-				<td>
-					<? 
-					echo "CEUs for Area#{$i}"; 
-					if ($i < 3) {echo " (50hrs Max)"; }
-					elseif ($i <5 ) {echo " (75hrs Max)"; }
-					else {echo " (90hrs Max)"; }
-					?>
-				</td>
-				<td>
-					<? echo $this->ceus_area($i); ?>
-				</td>
-			</tr>
-			<? } ?>
-		</table><?
-		if ($whatTOdo) {echo "<a href='ceupage.php' class='button'>GO TO CEU PAGE</a>";}
+		<fieldset>
+    		<legend>CEU SNAPSHOT</legend>
+    		<? if ($whatTOdo) {echo "<a href='ceupage.php' class='button tiny radius'>GO TO CEU PAGE</a>";} ?>
+			<table>
+				<tr>
+					<td>
+						<strong>Current Number of CEU Entries: </strong>
+					</td>
+					<td><strong>
+						<? echo $this->num_ceus(); ?></strong>
+					</td>
+				</tr>
+				<tr>
+					<td><strong>
+						Total of Current CEU Hours:</strong>
+					</td>
+					<td><strong>
+						<? echo $this->total_current_ceus(); ?></strong>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Number of Archived CEUs:
+					</td>
+					<td>
+						<? echo $this->num_archive(); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Archival Date:<br/>CEUs prior to this date have been archived
+					</td>
+					<td>
+						<? echo date('F d, Y', $this->cutoff); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Next Archival Date:
+					</td>
+					<td>
+						<? echo date('F d, Y', strtotime('+5 years', $this->cutoff)); ?>
+					</td>
+				</tr>
+				<? for ($i = 1; $i <= 6; $i++) { ?>
+				<tr>
+					<td>
+						<?
+						echo "CEUs for Area#{$i}";
+						?>
+					</td>
+					<td>
+						<? echo $this->ceus_area($i); ?>
+					</td>
+				</tr>
+				<? } ?>
+			</table>
+		</fieldset>
+		<?
+
 	}
 
 	function showarea($area, $archive=false){
@@ -128,10 +147,10 @@ class ceuinfo {
 		?> <strong> <? get_area($area); ?> </strong><br/><?
 		$whicharray=($archive) ? $this->archivearray: $this->ceuarray ;
 		if (!$archive){
-			echo "<a href='?addceu=yes&whicharea={$area}' class='button tiny success radius'>ADD CEUs</a><br/>";
+			echo "<a href='?addceu=yes&whicharea={$area}' class='button tiny radius'>ADD CEUs</a><br/>";
 		}
-		?> 
-		<table> 
+		?>
+		<table class="custom-table">
 			<thead>
 			    <tr>
 			      <th width="100">CEU Date</th>
@@ -146,7 +165,7 @@ class ceuinfo {
 		foreach ($whicharray as $info) {
 			if ($info->get_area()==$area){$info->show_entry($archive);}
 		}
-		?> 
+		?>
 			</tbody>
 		</table> <?
 		if (!$archive) { echo "Total Hours: ".$this->ceus_area($area); }
@@ -216,8 +235,8 @@ class ceuinfo {
 
 	function add_ceu($info){
 		global $database;
-		$ceudate = mktime(0, 0, 0, $database->escape_value($info['month']), 
-			$database->escape_value($info['day']), 
+		$ceudate = mktime(0, 0, 0, $database->escape_value($info['month']),
+			$database->escape_value($info['day']),
 			$database->escape_value($info['year']));
 		$sql = "INSERT INTO ceurenewal (";
 		$sql .= "ncedid, entrydate, ceudate, areaceu, typeceu, numhrs, notes";

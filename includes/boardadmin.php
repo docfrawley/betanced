@@ -1,14 +1,16 @@
 <? include_once("initialize.php");
 
 class boardadmin {
-	
+
 	private $the_board;
+	private $com_members;
 	private $possible_board;
-	
+
 	function __construct() {
 		global $database;
-		$the_board = array();
 		$this->the_board = array();
+		$this->com_members = array();
+		$this->possible_board = array();
 	}
 
 	function print_board($admin=false){
@@ -20,12 +22,20 @@ class boardadmin {
 						$title = convert_key($key);
 						if ($title !=""){
 							$boardMember = new boardMember($value);
-							echo '<tr><td>'.$title.'</td><td>';
+							echo '<tr><td><strong>'.$title.'</strong></td><td>';
 							echo $boardMember->print_member($key)."</td></tr>";
 						}
 					}
 				}
 		?></table><?
+	}
+
+	function list_commembers(){
+		$this->set_com_members();
+				foreach ($this->com_members as $value) {
+					$boardMember = new boardMember($value);
+					echo $boardMember->print_member($value).'<br/>';
+				}
 	}
 
 	function set_board(){
@@ -34,6 +44,16 @@ class boardadmin {
 		$sql="SELECT * FROM ncedboard";
 		$result_set = $database->query($sql);
 		$this->the_board = $database->fetch_array($result_set);
+	}
+
+	function set_com_members(){
+		global $database;
+		$this->com_members = array();
+		$sql="SELECT * FROM commembers";
+		$result_set = $database->query($sql);
+		while ($value = $database->fetch_array($result_set)){
+			array_push($this->com_members, $value['ncednum']);
+		}
 	}
 
 	function set_poss_board(){
@@ -55,9 +75,9 @@ class boardadmin {
 		} else {
 			$title = "<legend>Add Possible Board Member</legend>";
 		}
-		?> 
+		?>
 		 <form action="ncedboard.php" method="POST">
-		 	<fieldset><? 
+		 	<fieldset><?
 		 		echo $title;
 		 	?>
 		 	<div class="row">
@@ -85,7 +105,7 @@ class boardadmin {
 				<div class="small-6 columns">
         			<input type="submit" value="Submit" class="button tiny radius"/>
         		</div>
-        		<div class="small-6 columns text-right"><? 
+        		<div class="small-6 columns text-right"><?
         			if ($boardMember->is_current()){
         				echo '<a href="?member='. $value.'&task=mdelete" class="button tiny radius">DELETE</a>';
         			}?>
@@ -101,7 +121,7 @@ class boardadmin {
 		$sql .= "bmtitle='". $database->escape_value($info['bmtitle'])."', ";
 		$sql .= "bio='". $database->escape_value($info['bio']) ."'";
 		$sql .= " WHERE ncednum='". $database->escape_value($info['whatnumber']) ."'";
-	  	$database->query($sql);		
+	  	$database->query($sql);
 	}
 
 	function edit_position_form($person, $position){
@@ -156,7 +176,7 @@ class boardadmin {
 	    	}
 	    }
   	}
-	
+
 	function change_form(){
 		$this->set_board();
 		?><form action="ncedboard.php" method="post">
@@ -175,7 +195,7 @@ class boardadmin {
 							echo $boardMember->get_name()."</td></tr>";
 						}
 					}
-				}?>	
+				}?>
 				</table>
 				</div>
 			</div>
@@ -186,7 +206,7 @@ class boardadmin {
 	function members_form(){
 		$this->set_poss_board(); ?>
 		<div class="row">
-			<div class="small-12 columns"> 
+			<div class="small-12 columns">
 				<fieldset>
 		 			<legend>Edit/Delete Board Members</legend>
 					<?
@@ -213,12 +233,69 @@ class boardadmin {
 
 	function bmember_delete($value){
 		global $database;
-		echo "I'm here".$value;
 		$sql = "DELETE FROM binfo ";
 		$sql .= "WHERE ncednum='".$value."' ";
 		$sql .= "LIMIT 1";
 		$database->query($sql);
  	}
+
+	function cmember_add($info){
+		global $database;
+		$sql = "INSERT INTO commembers (";
+		$sql .= "ncednum";
+ 		$sql .= ") VALUES ('";
+		$sql .= $database->escape_value($info) ."')";
+		$database->query($sql);
+		$_SESSION['boardMessage']="You have successfully added a new committee member.";
+	}
+
+	function cmember_delete($value){
+		global $database;
+		$sql = "DELETE FROM commembers ";
+		$sql .= "WHERE ncednum='".$value."' ";
+		$sql .= "LIMIT 1";
+		$database->query($sql);
+ 	}
+
+	function com_members_form(){
+		$this->set_com_members();
+		$this->set_poss_board(); ?>
+		<div class="row">
+			<div class="small-12 columns">
+				<fieldset>
+		 			<legend>Add/Delete Board Members</legend>
+					<p>Click on a current member to remove them from the list</p>
+					<p>To add a member, use the dropdown list below</p>
+					<div class="row">
+						<div class="small-12 columns"><?
+							foreach ($this->com_members as $value) {
+							    $Member = new boardMember($value);
+							    echo '<a href="?member='. $value.'&task=delete_com">'.$Member->get_name().'</a><br/>';
+							} ?>
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-12 columns">
+					<form action="ncedboard.php" method="post">
+						<select name="person"> <?
+					  	foreach ($this->possible_board as $nvalue) {
+					    		$bMember = new boardMember($nvalue);
+					        echo '<option value="'. $nvalue. '">'.$bMember->get_name().'</option>';
+					    } ?>
+						</select>
+					 		</div>
+					 	</div>
+					 	<input type="hidden" name="task" value="add_com_members"/>
+						<div class="row">
+					 		<div class="small-12 columns">
+			        	<input type="submit" value="ADD" class="button tiny radius"/>
+			        </div>
+						</div>
+					</form>
+				</fieldset>
+			</div>
+		</div><?
+	}
 
 }
 ?>

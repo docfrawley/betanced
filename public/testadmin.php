@@ -26,7 +26,13 @@ if (isset($_SESSION['ncedadmin'])) {
         $maps->map_form(false);
     }
      
-        ?><div class = "row">
+        ?>
+        <div class = "row">
+            <div class = "medium-12 columns"> 
+              <p>To edit a test site, simply click on the location below. Click the delete button to delete the test site.</p>
+            </div> 
+        </div>
+        <div class = "row">
             <div class = "medium-12 columns"> 
               <table>
                 <? $maps->print_maps(true); ?>

@@ -6,12 +6,12 @@ function getnewarray($thearray, $where) {
 			$array1 = array_slice($thearray, $where);
 			$array2 = array_splice($thearray, $where);
 			$array3 = array_shift($array1);
-			$newarray = array_merge ($array2, $array3);	
+			$newarray = array_merge ($array2, $array3);
 		}
 		return $newarray;
-	} //function getnewarray($thearray, $where) 
-	
-	
+	} //function getnewarray($thearray, $where)
+
+
 function setlocation($theplace) {
 		$string_place = "<div id='locatorhome'>";
 		$string_place .= "<div id='whereat'>";
@@ -27,8 +27,8 @@ function redirect_to($new_location) {
 	$host = $_SERVER['HTTP_HOST'];
 	  header("Location: http://$host/betanced/public/$new_location");
 	  exit;
-	}	
-	
+	}
+
 function setyear() {
 	//if (date('n') > 11) {
 	//	return date('Y') +1;
@@ -45,7 +45,7 @@ function revokedmessage() {
 }
 
 function getrenewtime($renew_year, $currentyear) {
-	//return (mktime(0, 0, 0, date('n'), date('j'), date('Y')) > mktime(0, 0, 0, 11, 23, $currentyear) || 
+	//return (mktime(0, 0, 0, date('n'), date('j'), date('Y')) > mktime(0, 0, 0, 11, 23, $currentyear) ||
 	//	mktime(0, 0, 0, date('n'), date('j'), date('Y')) <= mktime(23, 59, 59, 3, 31, $renew_year));
 	return true;
 }
@@ -64,7 +64,7 @@ function statelist($thestate="State") {
 	$sql = "SELECT * FROM states";
 	$result_set = $database->query($sql);?>
 	<select name="state"/>
-        <option selected="selected" value="<? echo $thestate; ?>"/> <? echo get_state($thestate); ?> </option><? 
+        <option selected="selected" value="<? echo $thestate; ?>"/> <? echo get_state($thestate); ?> </option><?
         while ($value = $database->fetch_array($result_set)) { ?>
 			<option value="<? echo $value['abbrv'];  ?>"><? echo $value['fullname'];  ?></option> <?
 		}?>
@@ -164,13 +164,13 @@ $month = strtotime('2013-01-01');
 function GetDays() {
 	for($i=1; $i<=31;$i++){
 		?><option value="<? echo $i; ?>"><? echo $i; ?></option><?
-	} 
+	}
 }
 
 function GetYears() {
 	for($i=date("Y"); $i>=date("Y")-5;$i--){
 		?><option value="<? echo $i; ?>"><? echo $i; ?></option><?
-	} 
+	}
 }
 
 function parseToXML($htmlStr)
@@ -190,10 +190,10 @@ function convert_key($key){
 		'treasurer' => 'Treasurer',
 		'secretary' => 'Secretary',
 		'exam' => 'Exam Chair',
-		'membership' => 'Membership Chair',
-		'profdev' => 'Professional Development',
+		'membership' => 'Certificate Holders Chair',
+		'pgrowth' => 'Professional Growth',
 		'publicity' => 'Publicity and Advocacy',
-		'pgrowth' => 'Professional Growth and Advisory',
+		'website' => 'Website',
 		);
 	return $board_array[$key];
 }

@@ -1,5 +1,5 @@
 <?php require_once("../includes/initialize.php"); ?>
-<? include("../includes/layouts/header.php"); 
+<? include("../includes/layouts/header.php");
 
 if (isset($_SESSION['ncedadmin'])) {
     $member_admin = new memadmin();
@@ -8,12 +8,14 @@ if (isset($_SESSION['ncedadmin'])) {
         $member_admin->add_member($_POST);
     }
 
-    if (isset($_POST['ncednumber']) || isset($_POST['LastName']) || isset($_GET['ncednumberL'])){ 
-        if ((isset($_POST['howchange'])) || (isset($_POST['editinfo']))){
+    if (isset($_POST['ncednumber']) || isset($_POST['LastName']) || isset($_GET['ncednumberL'])){
+        if ((isset($_POST['howchange'])) || (isset($_POST['editinfo']) || (isset($_POST['changeyear'])) )){
             $ncednumber = $_POST['ncednumber'];
             $member = new memobject($ncednumber);
             if (isset($_POST['howchange'])){
                 $member->update_renew($_POST);
+            } elseif (isset($_POST['changeyear'])) {
+                $member->update_renewed_year($_POST['changeyear']);
             }
         } else {
             $ncednumber=isset($_GET['ncednumberL']) ? $_GET['ncednumberL'] : $member_admin->get_memberN($_POST, 'ncedadmin');
@@ -21,21 +23,23 @@ if (isset($_SESSION['ncedadmin'])) {
         }
         $meminfo = new infobject($ncednumber);
         if (isset($_POST['editinfo'])){
-            $meminfo->info_update($_POST); 
+            $meminfo->info_update($_POST);
         }
         $ceuinfo = new ceuinfo($ncednumber, $member->set_archivedate());
         ?>
-        <div class = "row">  
+        <div class = "row">
             <div class = "medium-9 columns">
+              <fieldset>
                  <? $member->display_member(); ?>
+               </fieldset>
             </div>
-            <div class = "medium-3 columns"> 
-                <? echo "<a href='ncedadmin.php' class='button small radius''>MEMBERSHIP ADMIN</a>"; ?>
-            </div>  
-        </div>  
-        <div class = "row"> 
+            <div class = "medium-3 columns">
+                <? echo "<a href='ncedadmin.php' class='button small radius'>MEMBERSHIP ADMIN</a>"; ?>
+            </div>
+        </div>
+        <div class = "row">
             <div class="small-7 columns">
-                <div class = "row"> 
+                <div class = "row">
                     <div class="small-12 columns">
                         <? $ceuinfo->snapshot(false); ?>
                     </div>
@@ -56,21 +60,21 @@ if (isset($_SESSION['ncedadmin'])) {
             </div>
         </div><?
     } else { ?>
-        <div class = "row"> 
-            <div class = "medium-12 columns"> 
-                <div class = "row panel"> 
+        <div class = "row">
+            <div class = "medium-12 columns">
+                <div class = "row panel">
                     <?
                         if (isset($_SESSION['memmessage'])) { ?>
                             <div class = "medium-12 columns"> <h2><?
-                                echo $_SESSION['memmessage']; 
+                                echo $_SESSION['memmessage'];
                                 $_SESSION['memmessage']=NULL; ?></h2>
                             </div> <?
                         } else {
                             $member_admin->printMemberCounts();
                         } ?>
 
-            </div> 
-        </div> 
+            </div>
+        </div>
         <? if (isset($_GET['task'])) { ?>
             <div class = "medium-12 columns"> <?
                     $member_admin->pending_list(); ?>
@@ -84,11 +88,11 @@ if (isset($_SESSION['ncedadmin'])) {
                     if (isset($_POST['renewal'])) { $member_admin->update_renew($_POST); }
                         $member_admin->set_renew(); ?>
                 </div>
-            </div> 
+            </div>
             <div class = "row">
                 <div class = "medium-12 columns"> <?
                     $member_admin->new_member_form(); ?>
-                </div> 
+                </div>
             </div> <?
         }
     }
