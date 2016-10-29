@@ -9,7 +9,12 @@ SetPagesController.$inject = ['SetPagesService'];
 function SetPagesController(SetPagesService) {
   var items = this;
     items.page = 1;
-    console.log(items.page);
+    items.last =0;
+
+  items.pageInit = function (num_pages){
+    items.last = num_pages;
+  };
+
   var promise = SetPagesService.getAjaxItems(items.page);
 
   promise.then(function(response) {
@@ -28,6 +33,26 @@ function SetPagesController(SetPagesService) {
     .catch(function (error) {
       console.log(error);
     });
+  };
+
+  items.firstPage =function () {
+    items.page=1;
+  };
+
+  items.lastPage =function () {
+    items.page=items.last;
+  };
+
+  items.increasePage= function () {
+    if (items.page < items.last){
+      items.page =parseInt(items.page) + 1;
+    }
+  };
+
+  items.decreasePage= function () {
+    if (items.page > 1){
+      items.page =parseInt(items.page) - 1;
+    }
   };
 
 }

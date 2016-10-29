@@ -7068,6 +7068,10 @@ th.hide-for-touch {
   font-size: 72px;
   color: #843080; }
 
+.fi-previous, .fi-arrow-left, .fi-arrow-right, .fi-next {
+  color: #FFF;
+  font-size: 24px; }
+
 .test-button {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -7140,9 +7144,6 @@ th.hide-for-touch {
 .title-color {
   color: #843080;
   font-weight: bold; }
-
-.index_site {
-  display: inline; }
 
 input[type="radio"]:checked + label {
   font-weight: bold; }
