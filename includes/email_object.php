@@ -66,7 +66,9 @@ class email_object {
            ';
            for ($counter=0; $counter< count($this->those_with); $counter++) {
            		$member = new infobject($this->those_with[$counter]);
-                $output .= '
+							$member_info = new memobject($this->those_with[$counter]);
+							if ($member_info->get_memstatus() != "REVOKED"){
+								$output .= '
                      <tr>
 										 			<td>'.$member->get_ncednum().'</td>
                           <td>'.$member->full_name().'</td>
@@ -74,6 +76,8 @@ class email_object {
 													<td>'.$member->sec_email().'</td>
                      </tr>
                 ';
+							}
+
            }
            $output .= '</table>';
            return $output;

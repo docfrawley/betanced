@@ -1,7 +1,7 @@
 <?php require_once("../includes/initialize.php"); ?>
 <? include("../includes/layouts/header.php");
 
-if (isset($_SESSION['ncedadmin'])) {
+if (isset($_SESSION['ncedadmin']) || isset($_SESSION['memberadmin'])) {
   ?><div ng-app="GetPagesApp"><?
   $all_emails = new email_object();
   $member_admin = new memadmin();

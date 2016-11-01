@@ -65,6 +65,14 @@
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>
+          <? } elseif (isset($_SESSION['memberadmin'])) { ?>
+          <li class="has-dropdown"><a href="#">ADMIN PAGES</a>
+               <ul class="dropdown">
+                 <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
+                 <li><a href="reportsadmin.php">REPORTS</a></li>
+                 <li><a href="logout.php">LOGOUT</a></li>
+               </ul>
+            </li>
           <? } else { ?>
           <li><a href="login.php">MEMBER LOGIN</a></li> <?
           } ?>
@@ -121,6 +129,14 @@
                  <li><a href="testadmin.php">TEST SITES</a></li>
                  <li><a href="emailadmin.php">EMAIL ADMIN</a></li>
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
+                 <li><a href="reportsadmin.php">REPORTS</a></li>
+                 <li><a href="logout.php">LOGOUT</a></li>
+               </ul>
+            </li>
+          <? } elseif (isset($_SESSION['memberadmin'])) { ?>
+          <li class="has-dropdown"><a href="#">ADMIN PAGES</a>
+               <ul class="dropdown">
+                 <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
                  <li><a href="reportsadmin.php">REPORTS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>

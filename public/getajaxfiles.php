@@ -1,6 +1,6 @@
 <?php require_once("../includes/initialize.php");
 
-if (isset($_SESSION['ncedadmin'])) {
+if (isset($_SESSION['ncedadmin']) || isset($_SESSION['memberadmin'])) {
 $page = $_GET['page'];
 $member_admin = new memadmin();
 $result = $member_admin->ajax_renewals($page, 25);

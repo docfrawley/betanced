@@ -1,7 +1,7 @@
 <?php require_once("../includes/initialize.php"); ?>
 <? include("../includes/layouts/header.php");
 
-if (isset($_SESSION['ncedadmin'])) {
+if (isset($_SESSION['ncedadmin']) || isset($_SESSION['memberadmin'])) {
     $member_admin = new memadmin();
 
     if (isset($_POST['ncednum'])) {

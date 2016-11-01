@@ -2,10 +2,10 @@
 session_start();
 
 class loginuser {
-	
+
 	private $first;
 	private $second;
-	
+
   function __construct($user, $pass) {
   	global $database;
 	$this->first = $database->escape_value($user);
@@ -14,9 +14,14 @@ class loginuser {
 
 	function first_check(){
 		global $database;
-		if ((strtolower($this->first) == "ncedadmin") && (strtolower($this->second) == "ncedin1!")) { 
-			$_SESSION['ncedadmin']="yes";
-			redirect_to('ncedadmin.php'); 
+		if (((strtolower($this->first) == "ncedadmin") && (strtolower($this->second) == "ncedin1!")) ||
+			((strtolower($this->first) == "memberadmin") && (strtolower($this->second) == "memncedin1!"))) {
+			if ((strtolower($this->first) == "ncedadmin") && (strtolower($this->second) == "ncedin1!")){
+				$_SESSION['ncedadmin']="yes";
+			} else {
+				$_SESSION['memberadmin']="yes";
+			}
+			redirect_to('ncedadmin.php');
 		} else {
 			$sql = "SELECT * FROM renewal WHERE lname='".$this->first."' AND ncednum='".$this->second."'";
 			$result_set = $database->query($sql);
@@ -32,7 +37,7 @@ class loginuser {
 			redirect_to('login.php');
 		}
 	}
-	
+
 	function check_form($info){
 		global $database;
 		$_SESSION['user'] = $database->escape_value($info['username']);
