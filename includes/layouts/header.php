@@ -33,6 +33,7 @@
                     <li><a href="board.php">BOARD OF DIRECTORS</a></li>
                     <li><a href="pdfs/ncedhistory.pdf">HISTORY</a></li>
                     <li><a href="pdfs/WhyBecome.pdf">WHY NCED?</a></li>
+                    <li><a href="pdfs/CERequirements.pdf">CE REQUIREMENTS</a></li>
                   </ul>
                 </li>
 
@@ -99,6 +100,7 @@
                  <li><a href="board.php">BOARD OF DIRECTORS</a></li>
                  <li><a href="pdfs/ncedhistory.pdf">HISTORY</a></li>
                  <li><a href="pdfs/WhyBecome.pdf">WHY NCED?</a></li>
+                 <li><a href="pdfs/CERequirements.pdf">CE REQUIREMENTS</a></li>
                </ul>
             </li>
 

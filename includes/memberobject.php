@@ -130,6 +130,14 @@ class memobject {
 						</tr>
 						<tr>
 							<td>
+								NCED#:
+							</td>
+							<td>
+								<? echo $this->ncednum ; ?>
+							</td>
+						</tr>
+						<tr>
+							<td>
 								Membership Began:
 							</td>
 							<td>
