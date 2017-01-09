@@ -323,7 +323,7 @@ class memobject {
 		?>
 		<h4>Payment History</h4>
 		<table>
-			<tr><td>Amount</td><td>Method</td><td>Date Entered</td></tr><?
+			<tr><td>Amount</td><td>Method</td><td>Date Entered</td><td>Check #</td></tr><?
 		while ($info = $database->fetch_array($result_set)) {
 			?> <tr><td><?
 			echo "$". number_format($info['amount'], 2, '.', '');
@@ -331,6 +331,8 @@ class memobject {
 			echo $info['manner'];
 			?></td><td><?
 			echo $info['rdate'];
+			?></td><td><?
+			echo $info['checkNum'];
 			?></td></tr><?
 		}
 		?> </table> <?
@@ -400,12 +402,13 @@ class memobject {
 		  		$amount = substr($amount, 1);
 		  	}
 		  	$sql = "INSERT INTO rmoney (";
-			$sql .= "ncednum, amount, rdate, manner";
+			$sql .= "ncednum, amount, rdate, manner, checkNum";
 	 		$sql .= ") VALUES ('";
 	 		$sql .= $this->ncednum ."', '";
 	 		$sql .= $amount ."', '";
 			$sql .= $today->format('F j, Y') ."', '";
-			$sql .= $database->escape_value($value['manner']) ."')";
+			$sql .= $database->escape_value($value['manner']) ."', '";
+			$sql .= $database->escape_value($value['checkNum']) ."')";
 			$database->query($sql);
 		}
 	  	if ($value['email']=='yes'){
@@ -518,8 +521,8 @@ class memobject {
 			 		</div>
 
 			 		<div class="row">
-				 		<div class="small-6 columns">
-				 			<label>Payment Amt For Renewals</label>
+				 		<div class="small-3 columns">
+				 			<label>Payment Amt</label>
 				 			<input type="text" name="amount" placeholder="Eg. 35.00"/>
 				 		</div>
 				 		<div class="small-6 columns">
@@ -531,6 +534,10 @@ class memobject {
 					        		<option value="money order"/> MONEY ORDER</option>
 					        		<option value="cash"/> CASH</option>
 							 	</select>
+				 		</div>
+						<div class="small-3 columns">
+				 			<label>Check #</label>
+				 			<input type="text" name="checkNum" placeholder="Check #"/>
 				 		</div>
 				 	</div>
 			 		<input type="hidden" name="ncednumber" value="<? echo $this->ncednum; ?>"/>
