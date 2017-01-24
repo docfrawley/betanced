@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/foundation-datepicker.min.css">
     <script src="js/vendor/modernizr.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgyfevEIE_AWxRuujToT_hAFTXTAQ8BRU">
+    </script>
 </head>
 
 
-<body onload="load()">
+<body >
   <? session_start(); ?>
 
     <div class="off-canvas-wrap" data-offcanvas>
@@ -61,6 +63,7 @@
                  <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
                  <li><a href="ncedboard.php">NCED BOARD</a></li>
                  <li><a href="testadmin.php">TEST SITES</a></li>
+                 <li><a href="tresultsadmin.php">TEST RESULTS</a></li>
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="reportsadmin.php">REPORTS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
@@ -129,6 +132,7 @@
                  <li><a href="ncedadmin.php">MEMBERSHIP</a></li>
                  <li><a href="ncedboard.php">NCED BOARD</a></li>
                  <li><a href="testadmin.php">TEST SITES</a></li>
+                 <li><a href="tresultsadmin.php">TEST RESULTS</a></li>
                  <li><a href="emailadmin.php">EMAIL ADMIN</a></li>
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="reportsadmin.php">REPORTS</a></li>

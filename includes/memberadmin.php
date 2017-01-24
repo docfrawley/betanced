@@ -486,6 +486,34 @@ class memadmin {
 		return $ncednumber;
 	}
 
+	function TestResultsToday(){
+		global $database;
+		$today = date("F j, Y");
+		$temp_array=array();
+		$sql="SELECT * FROM testresults WHERE tdate='".$today."' ORDER BY tnumber";
+		$result_set = $database->query($sql);
+		while ($value = $database->fetch_array($result_set)) {
+			array_push($temp_array, $value);
+		}
+		return $temp_array;
+	}
+
+	function addTestResult($info){
+		global $database;
+		$today = date("F j, Y");
+		$sql = "INSERT INTO testresults (";
+		$sql .= "tnumber, result, ncednum, tdate";
+ 		$sql .= ") VALUES ('";
+		$sql .= $database->escape_value($info['testnum']) ."', '";
+		$sql .= $database->escape_value($info['testR']) ."', '";
+		$sql .= $database->escape_value($info['ncednum']) ."', '";
+		$sql .= $today ."')";
+		$database->query($sql);
+		if (isset($info['ncednum'])) {
+			$this->add_member($info);
+		}
+	}
+
 
 	function add_member($info){
 		global $database;
@@ -597,6 +625,79 @@ class memadmin {
         </fieldset>
         </form><?
 	}
+
+	function new_member_test(){
+		?>
+		 <form action="tresultsadmin.php" method="POST">
+			<fieldset>
+					<legend>Enter Test Results</legend>
+
+			<div class="row">
+				<div class="medium-3 columns">
+					<input type="text" name="testnum" placeholder="Test Number"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="medium-4 columns">
+					      <label>Pass or Fail</label>
+					      <input type="radio" name="testR" value="PASSED" ><label for="TestRPASSED">PASS</label>
+					      <input type="radio" name="testR" value="NOT PASSED"><label for="TestNOT PASSED">NOT PASSED</label>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="medium-3 columns">
+					<input type="text" name="ncednum" placeholder="NCED Number (# <? echo $this->get_highnum(); ?>)"/>
+				</div>
+				<div class="medium-4 columns">
+					<input type="text" name="email" placeholder="Email Address"/>
+				</div>
+				<div class="medium-4 columns left">
+					<input type="text" name="secemail" placeholder="Secondary Email"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="medium-5 columns">
+					<input type="text" name="fname" placeholder="First Name"/>
+				</div>
+				<div class="medium-7 columns">
+					<input type="text" name="lname" placeholder="Last Name"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="medium-4 columns">
+					<input type="text" name="staddress" placeholder="Street Address"/>
+				</div>
+				<div class="medium-4 columns">
+					<input type="text" name="city" placeholder="City"/>
+				</div>
+				<div class="medium-2 columns">
+						<? statelist("State"); ?>
+				</div>
+				<div class="medium-2 columns">
+					<input type="text" name="zip" placeholder="Zip"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="medium-4 columns">
+					<input type="text" name="wphone" placeholder="Work Phone"/>
+				</div>
+				<div class="medium-4 columns">
+					<input type="text" name="hphone" placeholder="Home Phone"/>
+				</div>
+				<div class="medium-4 columns">
+					<input type="text" name="cphone" placeholder="Cell Phone"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-12 columns">
+							<input type="submit" value="Submit" class="button tiny radius"/>
+						</div>
+					</div>
+				</fieldset>
+				</form><?
+	}
+
 
 }
 ?>

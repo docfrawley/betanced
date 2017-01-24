@@ -1,7 +1,7 @@
 <? include_once("initialize.php");
 
 class map_object {
-	
+
 	private $lat;
 	private $lng;
 	private $address;
@@ -10,7 +10,7 @@ class map_object {
 	private $tdate;
 	private $whatshow;
 	private $numid;
-	
+
 	function __construct($id = 0) {
 		global $database;
 		if ($id==0){
@@ -39,7 +39,7 @@ class map_object {
 
 	function get_latlong($address){
         $prepAddr = str_replace(' ','+',$address);
-        $geocode=file_get_contents('http://maps.google.com/maps/api/geocode/json?address='.$prepAddr.'&sensor=false');
+        $geocode=file_get_contents('https://maps.google.com/maps/api/geocode/json?address='.$prepAddr.'&sensor=false');
         $output= json_decode($geocode);
         $this->lat = $output->results[0]->geometry->location->lat;
         $this->lng = $output->results[0]->geometry->location->lng;
