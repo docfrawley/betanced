@@ -55,6 +55,10 @@ class memobject {
 		}
 	}
 
+	function get_num(){
+		return $this->ncednum;
+	}
+
 	function get_name() {
 		return $this->fname." ".$this->lname;
 	}
@@ -158,16 +162,16 @@ class memobject {
 					<div class="small-6 columns">
 						<? $this->change_renew_year(); ?>
 					</div>
-				<? } else {
-					?><div class="small-3 columns"><?
-					$sql="SELECT * FROM testresults WHERE ncednum ='".$this->ncednum."'";
-					$result_set = $database->query($sql);
-			    if($database->num_rows($result_set) >0){
-						$get_pdf = "pdfs/".$this->ncednum.".pdf"; ?>
-			  		 <a href="<? echo $get_pdf; ?>" class="button tiny radius">Your Certificate</a><?
-					}
-					?> </div><?
-				}?>
+				<? } else {?>
+					<div class="small-3 columns">
+						<? if ($this->memstatus != "REVOKED"){ ?>
+							<a href="certificatepdf.php?ncednum=<? echo $_SESSION['ncednumber']; ?>"
+								 target="_blank"
+								 class="button tiny radius">Your Certificate</a>
+							</div>
+					<?	} ?>
+
+			<?	}?>
 			</div>
 			<?
 	}
