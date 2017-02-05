@@ -9,11 +9,11 @@ if (isset($_SESSION['ncedadmin']) || isset($_SESSION['memberadmin'])) {
         echo "Test Result Entered<br>";
     }
 
-    $today_array = $member_admin->TestResultsToday();
-    if (count($today_array)>0){
-      echo date("F j, Y")."<br>";
-      print_r($today_array);
-    }
+    // $today_array = $member_admin->TestResultsToday();
+    // if (count($today_array)>0){
+    //   echo date("F j, Y")."<br>";
+    //   print_r($today_array);
+    // }
 
 
     //list tresults entered today and add button to delete and edit.

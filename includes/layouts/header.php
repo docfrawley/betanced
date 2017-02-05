@@ -52,6 +52,7 @@
                <ul class="dropdown">
                  <li><a href="memberin.php">MEMBER HOME</a></li>
                  <li><a href="registry.php">REGISTRY</a></li>
+                 <li><a href="receipts.php">PAYMENT HISTORY</a></li>
                  <li><a href="ceupage.php">CEU PAGE</a></li>
                  <li><a href="newsletters.php">NEWSLETTERS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
@@ -121,6 +122,7 @@
                <ul class="dropdown">
                  <li><a href="memberin.php">MEMBER HOME</a></li>
                  <li><a href="registry.php">REGISTRY</a></li>
+                 <li><a href="receipts.php">PAYMENT HISTORY</a></li>
                  <li><a href="ceupage.php">CEU PAGE</a></li>
                  <li><a href="newsletters.php">NEWSLETTERS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>

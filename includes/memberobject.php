@@ -11,6 +11,7 @@ class memobject {
 	private $ncednum;
 	private $lastPayment;
 	private $paymentDate;
+	private $paymentHistory;
 	private $pending;
 	private $date_revoked;
 	private $manner;
@@ -31,14 +32,7 @@ class memobject {
 		$result_set = $database->query($sql);
 		$value = $database->fetch_array($result_set);
 		$this->memstart = $value['whenst'];
-		$sql="SELECT * FROM rmoney WHERE ncednum ='".$this->ncednum."' ORDER BY numid";
-		$result_set = $database->query($sql);
-		$temp = array();
-		while ($info = $database->fetch_array($result_set)) {
-			$this->lastPayment = $info['amount'];
-			$this->paymentDate = $info['rdate'];
-			$this->manner = $info['manner'];
-		}
+		$this->paymentHistory = array();
 	}
 
 
@@ -52,6 +46,22 @@ class memobject {
 			echo "Membership has been revoked";
 		} else {
 			echo "Membership is NOT renewed. Last year of renewal: {$this->ryear}" ;
+		}
+	}
+
+	function set_phistory(){
+		global $database;
+		$this->paymentHistory = array();
+		$sql="SELECT * FROM rmoney WHERE ncednum ='".$this->ncednum."' ORDER BY numid";
+		$result_set = $database->query($sql);
+		while ($info = $database->fetch_array($result_set)) {
+			// list($tmonth, $year) = explode(',', $info['rdate']);
+			// list($month, $day) = explode(' ', $tmont);
+			// $themonth = intval($month);
+			// $theday = intval($day);
+			// $theyear = intval($year);
+			// $info['rdate']= mktime(1,1,1,$themonth,$theday,$theyear);
+			array_push($this->paymentHistory, $info);
 		}
 	}
 
@@ -75,6 +85,11 @@ class memobject {
 		return $this->ryear;
 	}
 
+	function get_payhistory(){
+		$this->set_phistory();
+		return $this->paymentHistory;
+	}
+
 	function get_pending() {
 		return ($this->pending == 'yes' || $this->pending== 'reset');
 	}
@@ -95,6 +110,14 @@ class memobject {
 		$this->lname = $value['lname'];
 		$this->fname = $value['fname'];
 		return $this->fname.' '.$this->lname;
+	}
+
+	function get_payment_info($numid){
+		global $database;
+		$sql="SELECT * FROM rmoney WHERE numid ='".$numid."'";
+		$result_set = $database->query($sql);
+		$info= $database->fetch_array($result_set);
+		return $info;
 	}
 
 	function get_payment(){
@@ -320,20 +343,29 @@ class memobject {
 		}
 	}
 
+	// function compare_dates($a, $b){
+	// 	return strnatcmp($a['rdate'], $b['rdate']);
+	// }
+
 	function payment_history(){
-		global $database;
-		$sql="SELECT * FROM rmoney WHERE ncednum ='".$this->ncednum."' ORDER BY numid";
-		$result_set = $database->query($sql);
+		$this->set_phistory();
+  	// usort($this->paymentHistory, $this->compare_dates());
 		?>
 		<h4>Payment History</h4>
 		<table>
 			<tr><td>Amount</td><td>Method</td><td>Date Entered</td><td>Check #</td></tr><?
-		while ($info = $database->fetch_array($result_set)) {
+		// while ($info = $database->fetch_array($result_set)) {
+		foreach ($this->paymentHistory as $info) {
 			?> <tr><td><?
 			echo "$". number_format($info['amount'], 2, '.', '');
 			?></td><td><?
-			echo $info['manner'];
+			if ($info['manner']=="select"){
+				echo "";
+			} else {
+				echo $info['manner'];
+			}
 			?></td><td><?
+
 			echo $info['rdate'];
 			?></td><td><?
 			echo $info['checkNum'];
