@@ -37,4 +37,5 @@ include_once(LIB_PATH.DS.'email_object.php');
 include_once(LIB_PATH.DS.'indregistry.php');
 include_once(LIB_PATH.DS.'tresult_object.php');
 include_once(LIB_PATH.DS.'email_contact.php');
+include_once(LIB_PATH.DS.'handleFiles.php');
 ?>

@@ -1,3 +1,4 @@
+<?include_once("initialize.php");?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -14,7 +15,8 @@
 
 
 <body >
-  <? session_start(); ?>
+  <? session_start();
+  $fadmin = new files_object();?>
 
     <div class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
@@ -29,13 +31,13 @@
 
                 <li><a href="#">ABOUT</a>
                  <ul>
-                    <li><a href="pdfs/NCEDbenefits.pdf">BENEFITS OF NCED</a></li>
-                    <li><a href="pdfs/bylaws.pdf">BY-LAWS</a></li>
-                    <li><a href="pdfs/standingrules.pdf">STANDING RULES</a></li>
+                    <li><a href="<? echo $fadmin->get_path(4); ?>">BENEFITS OF NCED</a></li>
+                    <li><a href="<? echo $fadmin->get_path(5); ?>">BY-LAWS</a></li>
+                    <li><a href="<? echo $fadmin->get_path(6); ?>">STANDING RULES</a></li>
                     <li><a href="board.php">BOARD OF DIRECTORS</a></li>
-                    <li><a href="pdfs/ncedhistory.pdf">HISTORY</a></li>
-                    <li><a href="pdfs/WhyBecome.pdf">WHY NCED?</a></li>
-                    <li><a href="pdfs/CERequirements.pdf">CE REQUIREMENTS</a></li>
+                    <li><a href="<? echo $fadmin->get_path(7); ?>">HISTORY</a></li>
+                    <li><a href="<? echo $fadmin->get_path(8); ?>">WHY NCED?</a></li>
+                    <li><a href="<? echo $fadmin->get_path(9); ?>">CE REQUIREMENTS</a></li>
                   </ul>
                 </li>
 
@@ -67,6 +69,7 @@
                  <li><a href="tresultsadmin.php">TEST RESULTS</a></li>
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="reportsadmin.php">REPORTS</a></li>
+                 <li><a href="filesadmin.php">UPLOAD FILES</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>
@@ -98,13 +101,13 @@
         <ul class="right">
             <li class="has-dropdown"><a href="#">ABOUT</a>
                <ul class="dropdown">
-                 <li><a href="pdfs/NCEDbenefits.pdf">BENEFITS OF NCED</a></li>
-                 <li><a href="pdfs/bylaws.pdf">BY-LAWS</a></li>
-                 <li><a href="pdfs/standingrules.pdf">STANDING RULES</a></li>
+                 <li><a href="<? echo $fadmin->get_path(4); ?>">BENEFITS OF NCED</a></li>
+                 <li><a href="<? echo $fadmin->get_path(5); ?>">BY-LAWS</a></li>
+                 <li><a href="<? echo $fadmin->get_path(6); ?>">STANDING RULES</a></li>
                  <li><a href="board.php">BOARD OF DIRECTORS</a></li>
-                 <li><a href="pdfs/ncedhistory.pdf">HISTORY</a></li>
-                 <li><a href="pdfs/WhyBecome.pdf">WHY NCED?</a></li>
-                 <li><a href="pdfs/CERequirements.pdf">CE REQUIREMENTS</a></li>
+                 <li><a href="<? echo $fadmin->get_path(7); ?>">HISTORY</a></li>
+                 <li><a href="<? echo $fadmin->get_path(8); ?>">WHY NCED?</a></li>
+                 <li><a href="<? echo $fadmin->get_path(9); ?>">CE REQUIREMENTS</a></li>
                </ul>
             </li>
 
@@ -138,6 +141,7 @@
                  <li><a href="emailadmin.php">EMAIL ADMIN</a></li>
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="reportsadmin.php">REPORTS</a></li>
+                 <li><a href="filesadmin.php">UPLOAD FILES</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>

@@ -14,6 +14,12 @@ if (isset($_SESSION['ncednumber'])) {
     </div>
   </div>
 
+  <div class = "row custom-row-class">
+      <div class = "medium-3 columns left">
+        <a class="button radius expand" href="pdfs/winter2017.pdf">Winter 2017</a>
+      </div>
+    </div>
+
 <?
 }
 

@@ -160,6 +160,17 @@
   font-weight: bold;
 }
 
+button.file-upload > input[type='file'] {
+       cursor: pointer;
+       position: absolute;
+       font-size: 0;
+       top: 0;
+       left: 0;
+       opacity: 0;
+       height: 100%;
+       width: 100%;
+   }
+
 
 
 
