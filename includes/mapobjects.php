@@ -1,11 +1,11 @@
 <? include_once("initialize.php");
 
 class all_maps {
-	
+
 	private $map_array;
 	private $latitude;
 	private $longitude;
-	
+
 	function __construct() {
 		$this->map_array=array();
 	}
@@ -17,7 +17,7 @@ class all_maps {
 		$result_set = $database->query($sql);
 		while($value = $database->fetch_array($result_set)){ //
 			array_push($this->map_array,$value['numid']);
-		} 
+		}
 	}
 
 	function num_spots(){
@@ -88,12 +88,12 @@ class all_maps {
 				      <input type="radio" name="whatshow" value="season" id="whatshowseason" <? echo $season; ?>><label for="whatshowseason">Just Show Season</label>
 		    		</div>
 			        	<input type="hidden" name="task" value="<? echo $task; ?>"/>
-			        	<? 
+			        	<?
 			        	if ($editing){
 			        		?> <input type="hidden" name="id" value="<? echo $id; ?>"/> <?
 			        	}
 			        	?>
-			        	
+
 					<div class="small-12 columns">
 						<input type="submit" value="submit" class="button small"/>
 					</div>
@@ -101,7 +101,7 @@ class all_maps {
 	        </form>
 	    </div> <?
 	}
-	
+
 	function delete_map($numentry){
 		global $database;
 		$sql = "DELETE FROM markers ";
@@ -110,7 +110,7 @@ class all_maps {
 	 	$database->query($sql);
 	  	if ($database->affected_rows() == 1) {echo "<br/>Test has been deleted.";}
 	}
-	
+
 	function update_map($info){
 		global $database;
 		$id = $database->escape_value($info['id']);
@@ -130,7 +130,7 @@ class all_maps {
 		$sql .= "WHERE numid='". $id ."'";
 	  	$database->query($sql);
 	}
-	
+
 	function add_map($info){
 		global $database;
 		$whatshow = $database->escape_value($info['whatshow']);
@@ -150,7 +150,7 @@ class all_maps {
 	  	$sql .= nl2br($database->escape_value($info['content'])) ."')";
 		$database->query($sql);
 	}
-	
+
 	function print_maps(){
 		$this->set_maps();
 		$date1 = new DateTime("now");
@@ -160,7 +160,7 @@ class all_maps {
 			if ($date2>=$date1){
 				?> <tr><td>
 				<a href="?task=editM&id=<? echo $info->get_id(); ?>"><? echo $info->get_name().":  ".$info->get_address(); ?></a></br>
-				<? echo nl2br($info->get_content()); 
+				<? echo nl2br($info->get_content());
 					echo "<br/>Date: ".$info->get_tdate();
 				?>
 				</td><td><a href="?task=deleteM&id=<? echo $info->get_id(); ?>" class="button tiny radius alert">DELETE</a>
@@ -195,6 +195,36 @@ class all_maps {
 			}
 		}
 	}
-	
+
+	function get_markers(){
+		$this->set_maps();
+		$marker_array = array();
+		foreach ($this->map_array as $id) {
+			$site = new map_object($id);
+			$date1 = new DateTime("now");
+			$date2 = new DateTime($site->get_tdate());
+
+			if ($date2>=$date1){
+				$show_what = $site->get_whatshow();
+				$the_date = $site->get_tdate();
+				$whatshow = $this->whatshow($the_date, $show_what);
+				$location_array = array(
+					'lat'	=> (float)$site->get_lat(),
+					'lng' => (float)$site->get_lng()
+				);
+				$temp_array = array(
+					'name' => $site->get_name(),
+					'address' => $site->get_address(),
+					'content' => $site->get_content(),
+					'whatshow'=> $whatshow,
+					'location'=> $location_array
+				);
+				array_push($marker_array,$temp_array);
+			}
+
+		}
+		return $marker_array;
+	}
+
 }
 ?>

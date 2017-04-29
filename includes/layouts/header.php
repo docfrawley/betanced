@@ -8,9 +8,6 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/foundation-datepicker.min.css">
     <script src="js/vendor/modernizr.js"></script>
-    <script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgyfevEIE_AWxRuujToT_hAFTXTAQ8BRU">
-    </script>
 </head>
 
 

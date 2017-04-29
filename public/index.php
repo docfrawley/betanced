@@ -28,72 +28,12 @@
   </div>
 </div>
 <div class="row custom-row-class">
-	<div class="medium-6 columns">
-		<p id="map" style="height: 350px"></p>
-
-    <script type="text/javascript">
-    //<![CDATA[
+	<div class="medium-6 columns" ng-app="GoogleMap" ng-controller="GoogleMapController as maps">
+		<p id="map" style="height: 350px"></p></div>
 
 
 
-    function load() {
-      var map = new google.maps.Map(document.getElementById("map"), {
-        center: new google.maps.LatLng(45.6145, -106.3418),
-        zoom: 3,
-        mapTypeId: 'roadmap'
-      });
-      var infoWindow = new google.maps.InfoWindow;
 
-      downloadUrl("phpsqlajax_genxml.php", function(data) {
-        var xml = data.responseXML;
-        var markers = xml.documentElement.getElementsByTagName("marker");
-        for (var i = 0; i < markers.length; i++) {
-          var name = markers[i].getAttribute("name");
-          var address = markers[i].getAttribute("address");
-          var content = markers[i].getAttribute("content");
-          var point = new google.maps.LatLng(
-              parseFloat(markers[i].getAttribute("lat")),
-              parseFloat(markers[i].getAttribute("lng")));
-          var html = "<b>" + name + "</b> <br/>" + address + "<br/>" + content;
-          var marker = new google.maps.Marker({
-            map: map,
-            position: point,
-          });
-          bindInfoWindow(marker, map, infoWindow, html);
-        }
-      });
-    }
-
-    function bindInfoWindow(marker, map, infoWindow, html) {
-      google.maps.event.addListener(marker, 'click', function() {
-        infoWindow.setContent(html);
-        infoWindow.open(map, marker);
-      });
-    }
-
-    function downloadUrl(url, callback) {
-      var request = window.ActiveXObject ?
-          new ActiveXObject('Microsoft.XMLHTTP') :
-          new XMLHttpRequest;
-
-      request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-          request.onreadystatechange = doNothing;
-          callback(request, request.status);
-        }
-      };
-
-      request.open('GET', url, true);
-      request.send(null);
-    }
-
-    function doNothing() {}
-
-    //]]>
-
-  </script>
-
-	</div>
 	<div class="medium-5 columns left">
     <h2 class="text-center title-color">TEST SITES</h2>
         <?
@@ -110,24 +50,6 @@
         </div>
 	</div>
 
-
-	    <div id="map"></div>
-	    <script>
-	      var map;
-	      function initMap() {
-	        // Constructor creates a new map - only center and zoom are required.
-	        map = new google.maps.Map(document.getElementById('map'), {
-	          center: {lat: 40.7413549, lng: -73.9980244},
-	          zoom: 13
-	        });
-				var tribeca = {lat: 40.719526, lng: -74.0089934};
-        var marker = new google.maps.Marker({
-          position: tribeca,
-          map: map,
-          title: 'First Marker!'
-        });
-	      }
-	    </script>
 
 	    <script async defer
 	        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDue6uOBVjZ_POf3o152KQSO5yt0Ht1FY&v=3&callback=initMap">

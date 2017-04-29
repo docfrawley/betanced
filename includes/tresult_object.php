@@ -64,8 +64,9 @@ class tresult_object {
     if ($this->result === "PASSED"){
       ?><h3>Congratulations! You passed the exam.</h3><br/>
   		<br/>Here is your certificate, which includes your NCED 4 digit number:&nbsp
-      <? $get_pdf = "pdfs/".$this->ncednum.".pdf"; ?>
-  		 <a href="<? echo $get_pdf; ?>" class="button tiny radius"> Your Certificate</a>
+			<a href="certificatepdf.php?ncednum=<? echo $this->ncednum; ?>"
+				 target="_blank"
+				 class="button tiny radius">Your Certificate</a>
   		<br/><br/>Please make sure login into your member page to ensure your contact
       information is current and to see the NCED registry.
       <br/><a href="login.php" class="button tiny radius">MEMBER LOGIN</a>
