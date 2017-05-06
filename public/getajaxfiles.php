@@ -8,9 +8,4 @@ $result = $member_admin->ajax_renewals($page, 25);
 echo $json_response = json_encode($result);
 }
 
-if ($_GET['task']=='markers'){
-  $map_markers = new all_maps();
-  $result = $map_markers->get_markers();
-  echo $json_response = json_encode($result);
-}
 ?>

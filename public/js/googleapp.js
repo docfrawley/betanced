@@ -28,10 +28,11 @@ function GoogleMapController(GoogleMapService) {
 
     for (var i = 0; i < maps.spots.length; i++) {
       // Get the position from the location array.
-      var position = maps.spots[i].location;
+      maps.position = maps.spots[i].location;
+      console.log("position: ", maps.position);
       var marker = new google.maps.Marker({
         map: maps.map,
-        position: position,
+        position: maps.position,
         title: maps.spots[i].name,
         content: maps.spots[i].content,
         whatshow: maps.spots[i].whatshow,
@@ -85,7 +86,7 @@ function GoogleMapService($http) {
   service.getMapItems = function() {
     var response = $http({
       method: "GET",
-      url: ("http://localhost:8888/betanced/public/getajaxfiles.php"),
+      url: ("http://localhost:8888/betanced/public/getmapfiles.php"),
       params: {
         task: 'markers'
       }
