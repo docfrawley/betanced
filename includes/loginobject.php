@@ -15,13 +15,19 @@ class loginuser {
 	function first_check(){
 		global $database;
 		if (((strtolower($this->first) == "ncedadmin") && (strtolower($this->second) == "ncedin1!")) ||
-			((strtolower($this->first) == "memberadmin") && (strtolower($this->second) == "memncedin1!"))) {
+			((strtolower($this->first) == "memberadmin") && (strtolower($this->second) == "memncedin1!")) ||
+		((strtolower($this->first) == "examadmin") && (strtolower($this->second) == "examncedin1!"))) {
 			if ((strtolower($this->first) == "ncedadmin") && (strtolower($this->second) == "ncedin1!")){
 				$_SESSION['ncedadmin']="yes";
-			} else {
+				redirect_to('ncedadmin.php');
+			} elseif ((strtolower($this->first) == "memberadmin") && (strtolower($this->second) == "memncedin1!")) {
 				$_SESSION['memberadmin']="yes";
+				redirect_to('ncedadmin.php');
+			} else {
+				$_SESSION['examadmin']="yes";
+				redirect_to('tresultsadmin.php');
 			}
-			redirect_to('ncedadmin.php');
+
 		} else {
 			$sql = "SELECT * FROM renewal WHERE lname='".$this->first."' AND ncednum='".$this->second."'";
 			$result_set = $database->query($sql);
