@@ -2,23 +2,15 @@
 <? include("../includes/layouts/header.php");
 
 if (isset($_SESSION['ncednumber'])) {
+  $fadmin = new files_object();
 ?>
 <div class = "row custom-row-class">
     <div class = "medium-6 columns-centered">
       <h2 class="text-center title-color">NCED NEWSLETTERS</h2>
     </div>
   </div>
-<div class = "row custom-row-class">
-    <div class = "medium-3 columns left">
-      <a class="button radius expand" href="pdfs/fall2016.pdf">August/September 2016</a>
-    </div>
-  </div>
-
-  <div class = "row custom-row-class">
-      <div class = "medium-3 columns left">
-        <a class="button radius expand" href="pdfs/winter2017.pdf">Winter 2017</a>
-      </div>
-    </div>
+<? $fadmin->show_newsletters(); ?>
+</div>
 
 <?
 }

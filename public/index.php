@@ -11,6 +11,7 @@
   <div class="medium-5 columns left">
     <h2 class="text-center title-color">NCED NEWS</h2>
         <? $announcements = new all_announcements();
+				$fadmin = new files_object();
         if ($announcements->num_announce() > 0) {
           ?>
           <ul class="example-orbit-content" data-orbit data-options="animation_speed:500;
@@ -61,9 +62,12 @@
     <div id="exams" class="reveal-modal" data-reveal>
         <p>To register for an exam please download the application below that applies to you. Thank you.</p>
 
-        <a href="pdfs/general11.pdf"><i class="fi-download"></i>&nbspGeneral Application</a><br/>
-        <a href="pdfs/fasttrack11.pdf"><i class="fi-download"></i>&nbspFasttrack Application</a><br/>
-        <a href="pdfs/retake11.pdf"><i class="fi-download"></i>&nbspRetake Application</a><br/>
+        <a href="<? echo $fadmin->get_path('General Application'); ?>" target="_blank">
+					<i class="fi-download"></i>&nbspGeneral Application</a><br/>
+        <a href="<? echo $fadmin->get_path('Fasttrack Application'); ?>" target="_blank">
+					<i class="fi-download"></i>&nbspFasttrack Application</a><br/>
+        <a href="<? echo $fadmin->get_path('Retake Application'); ?>" target="_blank">
+					<i class="fi-download"></i>&nbspRetake Application</a><br/>
         <br/><br/>
         <a class="close-reveal-modal">&#215;</a>
     </div>
@@ -76,7 +80,8 @@
     <i class="fi-checkbox"></i>  Two  letters of  reference affirming competency  in  special education assessment.<br/>
     <i class="fi-checkbox"></i>  Membership in  CEC’s Council for Educational Diagnostic  Services  (CEDS).<br/>
     <i class="fi-checkbox"></i>  Passing  score on  the NCED  examination*.<br/><br/>
-    <a href="pdfs/ncedreq.pdf"><strong>DOWNLOAD CHECKLIST</strong></a><br/><br/>
+    <a href="<? echo $fadmin->get_path("DOWNLOAD CHECKLIST"); ?>"
+				target="_blank"><strong>DOWNLOAD CHECKLIST</strong></a><br/><br/>
     <i class="fi-alert"></i>  NOTE: It  is  recommended that  ALL requirements  be  completed
   at  least four weeks prior  to  the exam  date.<br/>
 

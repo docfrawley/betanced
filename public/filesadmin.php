@@ -4,7 +4,7 @@
 if (isset($_SESSION['ncedadmin'])) {
     $fadmin = new files_object();
     if(isset($_POST['submit'])) {
-  		$fadmin->add_file_general($_POST, $_FILES);
+  		$fadmin->add_file($_POST, $_FILES);
   	}
     $task=isset($_GET['task']) ? $_GET['task'] : "" ;
     if ($task != "") {
@@ -16,11 +16,11 @@ if (isset($_SESSION['ncedadmin'])) {
 <div class="row  custom-row-class">
   <div class="small-10 columns">
     <h3 class="title-color">General Admin Files</h3>
-    <? $fadmin->general_file_form();?>
+    <? $fadmin->admin_file_form();?>
   </div>
 </div><?
 
-$fadmin->show_general_files();
+$fadmin->show_admin_files();
 
 }
 

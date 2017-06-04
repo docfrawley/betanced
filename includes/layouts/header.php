@@ -28,20 +28,27 @@
 
                 <li><a href="#">ABOUT</a>
                  <ul>
-                    <li><a href="<? echo $fadmin->get_path(4); ?>">BENEFITS OF NCED</a></li>
-                    <li><a href="<? echo $fadmin->get_path(5); ?>">BY-LAWS</a></li>
-                    <li><a href="<? echo $fadmin->get_path(6); ?>">STANDING RULES</a></li>
-                    <li><a href="board.php">BOARD OF DIRECTORS</a></li>
-                    <li><a href="<? echo $fadmin->get_path(7); ?>">HISTORY</a></li>
-                    <li><a href="<? echo $fadmin->get_path(8); ?>">WHY NCED?</a></li>
-                    <li><a href="<? echo $fadmin->get_path(9); ?>">CE REQUIREMENTS</a></li>
+                   <li><a href="<? echo $fadmin->get_path('BENEFITS OF NCED');?>"
+                     target="_blank">BENEFITS OF NCED</a></li>
+                   <li><a href="<? echo $fadmin->get_path('BY-LAWS'); ?>"
+                     target="_blank">BY-LAWS</a></li>
+                   <li><a href="<? echo $fadmin->get_path('STANDING RULES'); ?>"
+                     target="_blank">STANDING RULES</a></li>
+                   <li><a href="board.php">BOARD OF DIRECTORS</a></li>
+                   <li><a href="<? echo $fadmin->get_path('HISTORY'); ?>"
+                     target="_blank">HISTORY</a></li>
+                   <li><a href="<? echo $fadmin->get_path('WHY NCED?'); ?>"
+                     target="_blank">WHY NCED?</a></li>
+                   <li><a href="<? echo $fadmin->get_path('CE REQUIREMENTS'); ?>"
+                     target="_blank">CE REQUIREMENTS</a></li>
                   </ul>
                 </li>
 
                 <li><a href="#">EXAMINATIONS</a>
                  <ul>
                     <li><a href="tresults.php">RESULTS</a></li>
-                 <li><a href="pdfs/studyguide.pdf">STUDY GUIDE</a></li>
+                    <li><a href="<? echo $fadmin->get_path('STUDY GUIDE'); ?>"
+                      target="_blank">STUDY GUIDE</a></li>
                   </ul>
                 </li>
                 <li><a href="contact.php">CONTACT</a></li>
@@ -67,6 +74,7 @@
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="reportsadmin.php">REPORTS</a></li>
                  <li><a href="filesadmin.php">UPLOAD FILES</a></li>
+                 <li><a href="ncedpdfs.php">ADMIN PDFS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>
@@ -106,20 +114,27 @@
         <ul class="right">
             <li class="has-dropdown"><a href="#">ABOUT</a>
                <ul class="dropdown">
-                 <li><a href="<? echo $fadmin->get_path(4); ?>">BENEFITS OF NCED</a></li>
-                 <li><a href="<? echo $fadmin->get_path(5); ?>">BY-LAWS</a></li>
-                 <li><a href="<? echo $fadmin->get_path(6); ?>">STANDING RULES</a></li>
+                 <li><a href="<? echo $fadmin->get_path('BENEFITS OF NCED');?>"
+                   target="_blank">BENEFITS OF NCED</a></li>
+                 <li><a href="<? echo $fadmin->get_path('BY-LAWS'); ?>"
+                   target="_blank">BY-LAWS</a></li>
+                 <li><a href="<? echo $fadmin->get_path('STANDING RULES'); ?>"
+                   target="_blank">STANDING RULES</a></li>
                  <li><a href="board.php">BOARD OF DIRECTORS</a></li>
-                 <li><a href="<? echo $fadmin->get_path(7); ?>">HISTORY</a></li>
-                 <li><a href="<? echo $fadmin->get_path(8); ?>">WHY NCED?</a></li>
-                 <li><a href="<? echo $fadmin->get_path(9); ?>">CE REQUIREMENTS</a></li>
+                 <li><a href="<? echo $fadmin->get_path('HISTORY'); ?>"
+                   target="_blank">HISTORY</a></li>
+                 <li><a href="<? echo $fadmin->get_path('WHY NCED?'); ?>"
+                   target="_blank">WHY NCED?</a></li>
+                 <li><a href="<? echo $fadmin->get_path('CE REQUIREMENTS'); ?>"
+                   target="_blank">CE REQUIREMENTS</a></li>
                </ul>
             </li>
 
             <li class="has-dropdown"><a href="#">EXAMINATIONS</a>
               <ul class="dropdown">
                 <li><a href="tresults.php">RESULTS</a></li>
-             <li><a href="pdfs/studyguide.pdf">STUDY GUIDE</a></li>
+             <li><a href="<? echo $fadmin->get_path('STUDY GUIDE'); ?>"
+               target="_blank">STUDY GUIDE</a></li>
               </ul>
             </li>
 
@@ -147,6 +162,7 @@
                  <li><a href="announceadmin.php">ANNOUNCEMENTS</a></li>
                  <li><a href="reportsadmin.php">REPORTS</a></li>
                  <li><a href="filesadmin.php">UPLOAD FILES</a></li>
+                 <li><a href="ncedpdfs.php">ADMIN PDFS</a></li>
                  <li><a href="logout.php">LOGOUT</a></li>
                </ul>
             </li>

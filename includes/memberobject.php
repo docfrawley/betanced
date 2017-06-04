@@ -233,6 +233,7 @@ class memobject {
 
 	function renew_process(){
 		global $database;
+		$fadmin = new files_object();
 		switch ($this->pending) {
 		case 'yes': ?>
 			<div class="row">
@@ -319,7 +320,9 @@ class memobject {
 			<i class="fi-mail"></i>
 		</div>
 		<div class="small-11 columns">
-			Download and complete this <strong><a href="pdfs/renewform.pdf">FORM</a></strong>.
+			Download and complete this <strong>
+				<a href="<? echo $fadmin->get_path('FORM'); ?>"
+					target="_blank">FORM</a></strong>.
 			Make sure to mail the form and payment to the address listed on the form. You will
 			notified when your payment and form have been processed.
 		</div>
