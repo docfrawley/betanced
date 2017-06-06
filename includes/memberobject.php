@@ -33,6 +33,19 @@ class memobject {
 		$value = $database->fetch_array($result_set);
 		$this->memstart = $value['whenst'];
 		$this->paymentHistory = array();
+
+		$date1 = new DateTime("now");
+		$date = "2/28/".date('Y');
+		$date2 = new DateTime($date);
+		$year = date('Y');
+		if ($this->ryear< $year &&
+			$date1 > $date2 && $value['status']!= 'REVOKED'){
+			$this->memstatus = 'NON-RENEWED';
+			$sql = "UPDATE renewal SET ";
+			$sql .= "status='NON-RENEWED'";
+			$sql .= " WHERE ncednum='". $this->ncednum ."'";
+			$database->query($sql);
+		}
 	}
 
 
@@ -44,6 +57,10 @@ class memobject {
 			}
 		} elseif ($this->memstatus == "REVOKED") {
 			echo "Membership has been revoked";
+		} elseif ($this->memstatus=="NON-RENEWED"){
+			echo "Renewed through {$this->ryear}, but your current status is 'NON-RENEWED'
+			because you have missed the deadline to renew. As such you do not have access to
+			the registry or online newsletters. Please update your renewal status as soon as possible.";
 		} else {
 			echo "Membership is NOT renewed. Last year of renewal: {$this->ryear}" ;
 		}

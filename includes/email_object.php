@@ -62,6 +62,8 @@ class email_object {
             		<th>Name</th>
                 <th>Primary Email</th>
 								<th>Secondary Email</th>
+								<th>Status</th>
+								<th>Last Year Renewed</th>
               </tr>
            ';
            for ($counter=0; $counter< count($this->those_with); $counter++) {
@@ -74,6 +76,8 @@ class email_object {
                           <td>'.$member->full_name().'</td>
                           <td>'.$member->get_email().'</td>
 													<td>'.$member->sec_email().'</td>
+													<td>'.$member_info->get_memstatus().'</td>
+													<td>'.$member_info->get_ryear().'</td>
                      </tr>
                 ';
 							}

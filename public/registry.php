@@ -1,12 +1,14 @@
 <?php require_once("../includes/initialize.php"); ?>
-<? include("../includes/layouts/header.php"); 
+<? include("../includes/layouts/header.php");
 
 if (isset($_SESSION['ncednumber'])) {
-	?> 
+	$member = new memobject(_SESSION['ncednumber']);
+  if ($member->get_memstatus =='RENEWED'){
+	?>
 	<div class="row">
 		<div class="small-12 columns">
-			<p>Welcome to the NCED National Registry. You may search for a qualified educational diagnostician below. 
-				You may fill in as many fields as you would like. So you can search by the first letter of last names, OR by state, OR by speciality. 
+			<p>Welcome to the NCED National Registry. You may search for a qualified educational diagnostician below.
+				You may fill in as many fields as you would like. So you can search by the first letter of last names, OR by state, OR by speciality.
 				You can also run a more specific search by entering two or all three fields. The results of your search will be listed below.
 				Please note that only the states listed are those with registered NCED members participating in the national registry.</p>
 		</div>
@@ -16,7 +18,7 @@ if (isset($_SESSION['ncednumber'])) {
 	 				<div class="medium-3 columns">
 					<select name="lname">
 					<option value="">First Letter of Last Name</option>
-					<?  
+					<?
 					foreach (range('A', 'Z') as $h) {
 						?><option value="<? echo $h; ?>"><? echo $h; ?></option><?
 					} //foreach (range('A', 'Z') as $h)
@@ -43,10 +45,10 @@ if (isset($_SESSION['ncednumber'])) {
 	                </select>
 	            </div>
 	            <div class="medium-3 columns">
-	            	<input type="submit" value="Submit" class="button small"/>    
+	            	<input type="submit" value="Submit" class="button small"/>
 	        	</div>
 	        </div>
-			</form> 
+			</form>
 		</div>
 		<div>
 			<?
@@ -55,7 +57,7 @@ if (isset($_SESSION['ncednumber'])) {
 				if ($rObject->check_submission()){
 					echo "Please check your submssion and try again";
 				} else {
-					?>  
+					?>
 						<div class="small-12 columns">
 					<?
 					$rObject->create_accordian();
@@ -69,14 +71,8 @@ if (isset($_SESSION['ncednumber'])) {
 	</div>
 
 	<!-- modal windows -->
-	 <?  
-	} else {
-		?>
-		<div class="row">
-			<div class="small-12 columns">
-				You must log in as a member to view this page.
-			</div>
-		</div>
-		<?
+	 <? } else {
+		 ?><h1>Your renewal status does not allow you access to this page.</h1><?
+	 }
 	}
 include("../includes/layouts/footer.php"); ?>

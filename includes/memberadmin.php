@@ -10,19 +10,11 @@ class memadmin {
 	private $renewyear;
 	private $oneYear;
 	private $threeYear;
+	private $nonrenewed;
 
 
 	function __construct() {
 		global $database;
-		$sql="SELECT * FROM renewal ORDER BY ncednum";
-		$result_set = $database->query($sql);
-		$this->allmem = array();
-		$this->activeCerts = array();
-		$this->inactiveCerts = array();
-		$this->revoked = array();
-		while ($value = $database->fetch_array($result_set)) {
-			array_push($this->allmem, $value);
-		}
 		$sql="SELECT * FROM renewinfo";
 		$result_set = $database->query($sql);
 		$value= $database->fetch_array($result_set);
@@ -30,6 +22,33 @@ class memadmin {
 		$this->renewyear = $value['theyear'];
 		$this->oneYear = $value['oneyr'];
 		$this->threeYear = $value['threeyr'];
+
+		$sql="SELECT * FROM renewal ORDER BY ncednum";
+		$result_set = $database->query($sql);
+		$this->allmem = array();
+		$this->activeCerts = array();
+		$this->inactiveCerts = array();
+		$this->revoked = array();
+		$this->nonrenewed = array();
+		$temp_array = array();
+		while ($value = $database->fetch_array($result_set)) {
+			array_push($temp_array, $value);
+		}
+
+		$date1 = new DateTime("now");
+		$date = "2/28/".date('Y');
+		$date2 = new DateTime($date);
+		foreach ($temp_array as $value) {
+			if ($value['renewyear']<$this->renewyear &&
+				$date1 > $date2 && $value['status']!= 'REVOKED'){
+					$value['status'] = 'NON-RENEWED';
+					$sql = "UPDATE renewal SET ";
+					$sql .= "status='NON-RENEWED'";
+					$sql .= " WHERE ncednum='". $value['ncednum'] ."'";
+					$database->query($sql);
+				}
+				array_push($this->allmem, $value);
+		}
 	}
 
 	function get_year(){
@@ -56,9 +75,19 @@ class memadmin {
 	function get_activeCerts(){
 		$this->activeCerts = array();
 		for ($counter=1; $counter<= count($this->allmem); $counter++) {
-			if ($this->allmem[$counter]['status'] == 'RENEWED' &&
+			if (($this->allmem[$counter]['status'] == 'RENEWED' ||
+					$this->allmem[$counter]['status'] == 'NON-RENEWED') &&
 					$this->allmem[$counter]['renewyear'] > ($this->renewyear-4)){
 				array_push($this->activeCerts, $this->allmem[$counter]['ncednum']);
+			}
+		}
+	}
+
+	function get_nonrenewed(){
+		$this->activeCerts = array();
+		for ($counter=1; $counter<= count($this->allmem); $counter++) {
+			if ($this->allmem[$counter]['status'] == 'NON-RENEWED'){
+				array_push($this->nonrenewed, $this->allmem[$counter]['ncednum']);
 			}
 		}
 	}
@@ -114,18 +143,22 @@ class memadmin {
 			}
 
 		}
-
+		$this->get_nonrenewed();
+		$num_nonren = count($this->nonrenewed);
 		?>
 			<div class="row">
-	            <div class = "medium-4 columns"> <h5><?
+	            <div class = "medium-3 columns"> <h5><?
 	            	$previous = $this->renewyear-1;
 	                echo "# Renewed ".$previous.": <strong>{$prevYr}</strong>"; ?></h5>
 	            </div>
-	            <div class = "medium-4 columns"> <h5><?
+	            <div class = "medium-3 columns"> <h5><?
 	                echo "# Renewed ".$this->renewyear.": <strong>{$currYr}</strong>"; ?></h5>
 	            </div>
-	            <div class = "medium-4 columns"> <h5><?
+	            <div class = "medium-3 columns"> <h5><?
 		            echo "# Revoked: <strong>{$revoked}</strong>"; ?></h5>
+	            </div>
+							<div class = "medium-3 columns"> <h5><?
+		            echo "# Non-Renewed: <strong>{$num_nonren}</strong>"; ?></h5>
 	            </div>
         	</div>
         	<div class="row">
@@ -233,7 +266,7 @@ class memadmin {
 				if ($wlist=='active'){
 					$output .='<th>Active Certificate Holders</th></tr>';
 				} else {
-					$output .='<th>Complete Renewal List</th></tr>';
+					$output .='<th>Revoked List</th></tr>';
 				}
 				$output .='
 							<tr>
