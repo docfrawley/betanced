@@ -39,7 +39,7 @@ class memobject {
 		$date2 = new DateTime($date);
 		$year = date('Y');
 		if ($this->ryear< $year &&
-			$date1 > $date2 && $value['status']!= 'REVOKED'){
+			$date1 > $date2 && $this->memstatus != 'REVOKED'){
 			$this->memstatus = 'NON-RENEWED';
 			$sql = "UPDATE renewal SET ";
 			$sql .= "status='NON-RENEWED'";
