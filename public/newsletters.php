@@ -1,9 +1,10 @@
 <?php require_once("../includes/initialize.php"); ?>
 <? include("../includes/layouts/header.php");
-
+session_start();
 if (isset($_SESSION['ncednumber'])) {
-  $member = new memobject(_SESSION['ncednumber']);
-  if ($member->get_memstatus =='RENEWED'){
+  $member = new memobject($_SESSION['ncednumber']);
+
+  if ($member->get_memstatus() =='RENEWED'){
     $fadmin = new files_object();
   ?>
   <div class = "row custom-row-class">
@@ -15,9 +16,9 @@ if (isset($_SESSION['ncednumber'])) {
   </div>
 
   <?
-} else {
-  ?><h1>Your renewal status does not allow you access to this page.</h1><?
-}
+  } else {
+    ?><h1>Your renewal status does not allow you access to this page.</h1><?
+  }
 }
 
 include("../includes/layouts/footer.php"); ?>
